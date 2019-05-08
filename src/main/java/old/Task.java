@@ -1,3 +1,5 @@
+package old;
+
 import javax.persistence.Entity;
 import java.sql.Timestamp;
 

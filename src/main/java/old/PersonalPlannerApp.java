@@ -1,3 +1,5 @@
+package old;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -156,15 +158,15 @@ public class PersonalPlannerApp extends Application {
                     System.err.println("Unexpected column name detected");
                     throw new SQLException();
             }
-            column.setCellValueFactory(new PropertyValueFactory<>(dbColumnName)); //Setting cell property value to correct variable from Task class.
+            column.setCellValueFactory(new PropertyValueFactory<>(dbColumnName)); //Setting cell property value to correct variable from old.Task class.
             tableTasks.getColumns().add(column);
         }
     }
 
     /**
-     * Extracts an Arraylist of Task objects from a ResultSet of a current connection
+     * Extracts an Arraylist of old.Task objects from a ResultSet of a current connection
      * @param resultSet A ResultSet you get from executing a SELECT query
-     * @return An Arraylist of Task objects extracted from the database
+     * @return An Arraylist of old.Task objects extracted from the database
      * @throws SQLException if get operations from result set werent succesful
      */
     private ArrayList<Task> extractTasks(ResultSet resultSet) throws SQLException {
@@ -205,7 +207,7 @@ public class PersonalPlannerApp extends Application {
         TextField taskTitle = new TextField();
         taskTitle.setPromptText("name of the task");
 
-        grid.add(new Label("Task ID:"), 0, 0);
+        grid.add(new Label("old.Task ID:"), 0, 0);
         grid.add(taskID, 1, 0);
         grid.add(new Label("Title:"), 0, 1);
         grid.add(taskTitle, 1, 1);

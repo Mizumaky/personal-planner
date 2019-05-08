@@ -1,5 +1,7 @@
+import javax.persistence.Entity;
 import java.sql.Timestamp;
 
+@Entity
 public class Task {
     private int task_id;
     private String title;

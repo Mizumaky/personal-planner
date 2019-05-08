@@ -1,19 +1,20 @@
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 public class PersonalPlannerApp extends Application {
@@ -22,7 +23,9 @@ public class PersonalPlannerApp extends Application {
 
     Pane paneMain = new VBox(10);
     Label labelStatus = new Label("Not connected.");
+    Pane paneButtons = new HBox(6);
     Button btnRefreshTableTasks = new Button("Refresh");
+    Button btnAddTask = new Button("Add a task");
 
     TableView<Task> tableTasks = new TableView<>();
 
@@ -33,16 +36,22 @@ public class PersonalPlannerApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         paneMain.getChildren().add(labelStatus);
-        paneMain.getChildren().add(btnRefreshTableTasks);
+        paneMain.getChildren().add(paneButtons);
+        paneButtons.getChildren().add(btnRefreshTableTasks);
         btnRefreshTableTasks.setOnAction(event -> {
             DBConnectivity.checkConnection(dbConnection, labelStatus);
             getTableTasks();
+        });
+        paneButtons.getChildren().add(btnAddTask);
+        btnAddTask.setOnAction(event -> {
+            DBConnectivity.checkConnection(dbConnection, labelStatus);
+            addTask();
         });
         paneMain.getChildren().add(tableTasks);
 
         Scene sceneMain = new Scene(paneMain, 420, 500);
         primaryStage.setScene(sceneMain);
-        primaryStage.setTitle("DB Application");
+        primaryStage.setTitle("Personal Planner");
         primaryStage.show();
 
         dbConnection = DBConnectivity.connect(labelStatus);
@@ -75,10 +84,9 @@ public class PersonalPlannerApp extends Application {
     }
 
     /**
-     *
-     * @return
+     * Wraps functions for getting data from database, if the app's task table doesnt have any columns then adding them
+     * and then loading the rows into it.
      */
-
     private void getTableTasks() {
         ResultSet resultSet;
         labelStatus.setText("Querrying data from database...");
@@ -145,8 +153,8 @@ public class PersonalPlannerApp extends Application {
                     column.setText("Due date");
                     break;
                 default:
-                    System.out.println("Unexpected column name detected");
-                    //throw new SQLException();
+                    System.err.println("Unexpected column name detected");
+                    throw new SQLException();
             }
             column.setCellValueFactory(new PropertyValueFactory<>(dbColumnName)); //Setting cell property value to correct variable from Task class.
             tableTasks.getColumns().add(column);
@@ -171,7 +179,68 @@ public class PersonalPlannerApp extends Application {
         }
 
         //TODO add sorting according to the settings, store in an xml?
-
         return data;
+    }
+
+    private void addTask() {
+        Dialog<Task> dialogAddTask = new Dialog<>();
+        dialogAddTask.setTitle("Create a task");
+        dialogAddTask.setHeaderText("Fill in the properties of the new task");
+
+//        // Set the icon (must be included in the project).
+//        //dialogAddTask.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
+//
+        // Set the button types.
+        ButtonType createBtnType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        dialogAddTask.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, createBtnType);
+//
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField taskID = new TextField();
+        taskID.setPromptText("number id");
+        TextField taskTitle = new TextField();
+        taskTitle.setPromptText("name of the task");
+
+        grid.add(new Label("Task ID:"), 0, 0);
+        grid.add(taskID, 1, 0);
+        grid.add(new Label("Title:"), 0, 1);
+        grid.add(taskTitle, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node createBtn = dialogAddTask.getDialogPane().lookupButton(createBtnType);
+        createBtn.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        taskID.textProperty().addListener((observable, oldValue, newValue) -> {
+            boolean condition = newValue.trim().isEmpty() || taskTitle.textProperty().get().trim().isEmpty();
+            createBtn.setDisable(condition);
+        });
+        taskTitle.textProperty().addListener((observable, oldValue, newValue) -> {
+            boolean condition = newValue.trim().isEmpty() || taskID.textProperty().get().trim().isEmpty();
+            createBtn.setDisable(condition);
+        });
+
+        dialogAddTask.getDialogPane().setContent(grid);
+//
+//        // Request focus on the username field by default.
+//        Platform.runLater(() -> username.requestFocus());
+//
+//        // Convert the result to a username-password-pair when the login button is clicked.
+//        dialogAddTask.setResultConverter(dialogButton -> {
+//            if (dialogButton == loginButtonType) {
+//                return new Pair<>(username.getText(), password.getText());
+//            }
+//            return null;
+//        });
+//
+        Optional<Task> result = dialogAddTask.showAndWait();
+//
+//        result.ifPresent(usernamePassword -> {
+//            System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+//        });
     }
 }

@@ -14,9 +14,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml")); //also instantiates the associated controller
-        //StyleManager
+        //root.getStylesheets().add(getClass().getResource("MyStyle1.css").toExternalForm());
         primaryStage.setTitle("Taskira");
-        primaryStage.setScene(new Scene(root, 400, 250));
+        primaryStage.setScene(new Scene(root, 800, 400));
         primaryStage.show();
     }
 }

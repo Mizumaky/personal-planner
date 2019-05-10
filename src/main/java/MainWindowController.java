@@ -24,6 +24,7 @@ public class MainWindowController {
         alert.setTitle("Quit");
         alert.setHeaderText(null);
         alert.setContentText("This will kill everything, are you sure?");
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("MyStyle1.css").toExternalForm());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             //TODO send message to model so that it properly closes

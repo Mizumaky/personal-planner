@@ -1,8 +1,40 @@
-.root{
+.root {
     -fx-background-color: #effdff;
 }
-.button{
-    -fx-background-color: #3b9eff;
+
+.button {
+    -fx-background-color: #2f70ff;
     -fx-text-fill: #ffffff;
     -fx-background-radius: 4;
+}
+.button:hover {
+    -fx-background-color: #6aa7ff;
+}
+
+.menu-bar {
+    -fx-background-color: #0B2545;
+    -fx-background-radius: 2;
+}
+.menu {
+    -fx-background-color: #0B2545;
+}
+.menu:focused, .menu:hover {
+    -fx-background-color: #13315C;
+}
+.menu .label {
+    -fx-font-style: bold;
+    -fx-text-fill: #ffffff;
+}
+.context-menu {
+    -fx-background-color: #13315C;
+    -fx-background-radius: 2;
+}
+.menu-item {
+    -fx-background-color: #13315C;
+}
+.menu-item:focused, .menu-item:hover {
+    -fx-background-color: #134074;
+}
+.menu-item .label {
+    -fx-text-fill: #ffffff;
 }

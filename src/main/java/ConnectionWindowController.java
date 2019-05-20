@@ -50,7 +50,7 @@ public class ConnectionWindowController {
                     }
                 });
 
-        // Start the connection task
+        // Start new connection task using the service
         connectService.start();
     }
 }

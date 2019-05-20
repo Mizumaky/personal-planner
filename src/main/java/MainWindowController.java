@@ -17,7 +17,6 @@ public class MainWindowController {
     @FXML //so that even if its private, the loader can access it
     private MenuItem fileQuit;
 
-
     @FXML
     protected void handleFileQuitMenuAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

@@ -16,7 +16,8 @@ import java.util.Set;
 })
 public class TaskEntity {
     @Id
-    @GeneratedValue  (strategy = GenerationType.AUTO) //do i need this if i have serial at sql creation??
+    @SequenceGenerator(name="seq", initialValue=7, allocationSize=100)
+    @GeneratedValue  (strategy = GenerationType.SEQUENCE, generator = "seq") //do i need this if i have serial at sql creation??
     private int id;
 
     @Column(name = "title", nullable = false, length = 255)

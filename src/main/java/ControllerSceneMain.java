@@ -25,7 +25,7 @@ public class ControllerSceneMain {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Quit");
         alert.setHeaderText(null);
-        alert.setContentText("This will kill everything, are you sure?");
+        alert.setContentText("Are you sure?");
         alert.getDialogPane().getStylesheets().add(getClass().getResource("CSS_my_style_1.css").toExternalForm());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {

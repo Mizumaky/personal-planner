@@ -8,12 +8,18 @@ import java.util.Set;
 
 @Entity
 @Table (name = "task", schema = "public")
+@NamedQueries({
+        @NamedQuery(name = "TaskEntity.findAll", query = "select t from TaskEntity t"),
+//        @NamedQuery(name = "TaskEntity.findById", query = "select t from TaskEntity t where t.id = :id"),
+//        @NamedQuery(name = "TaskEntity.findByTitle", query = "select t from TaskEntity t where t.title = :title"),
+//        @NamedQuery(name = "TaskEntity.findByIsDone", query = "select t from TaskEntity t where t.is_done = :is_done")
+})
 public class TaskEntity {
     @Id
-    @GeneratedValue   //(strategy = GenerationType.SEQUENCE) do i need this if i have serial at sql creation??
+    @GeneratedValue  (strategy = GenerationType.AUTO) //do i need this if i have serial at sql creation??
     private int id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
     @Column(name = "description")

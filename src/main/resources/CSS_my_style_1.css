@@ -1,14 +1,15 @@
 .root {
-    -fx-background-color: #effdff;
+    -fx-background-color: #f3fdff;
 }
 
 .button {
     -fx-background-color: #2f70ff;
     -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
     -fx-background-radius: 4;
 }
 .button:hover {
-    -fx-background-color: #6aa7ff;
+    -fx-background-color: #579dff;
 }
 
 .menu-bar {
@@ -38,3 +39,20 @@
 .menu-item .label {
     -fx-text-fill: #ffffff;
 }
+
+.my-big-label {
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+    -fx-text-fill: #134074;
+}
+.my-top-menu {
+    -fx-background-color: #fefeff;
+}
+.my-pop-up {
+    -fx-background-color: #fefeff;
+}
+.my-strong-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+

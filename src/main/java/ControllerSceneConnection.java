@@ -3,18 +3,26 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 
-public class ConnectionWindowController {
+public class ControllerSceneConnection {
     @FXML
     Label statusLabel;
     @FXML
     Button cancelButton;
     @FXML
     Button tryAgainButton;
+    @FXML
+    ProgressIndicator progressIndicator;
 
     private ConnectService connectService;
 
-    public ConnectionWindowController() {}
+    private ApplicationMain mainApp;
+    public void setMainApp(ApplicationMain mainApp) {
+        this.mainApp = mainApp;
+    }
+
+    public ControllerSceneConnection() {}
 
     @FXML
     public void initialize() {
@@ -22,6 +30,7 @@ public class ConnectionWindowController {
         statusLabel.textProperty().unbind();
         statusLabel.setText("Initializing...");
         statusLabel.textProperty().bind(connectService.messageProperty());
+        progressIndicator.visibleProperty().bind(connectService.runningProperty());
         cancelButton.setOnAction(event -> {
             cancelButton.setDisable(true);
             statusLabel.textProperty().unbind();
@@ -44,6 +53,8 @@ public class ConnectionWindowController {
                     if (result) {
                         statusLabel.setText("Succesfully connected!");
                         cancelButton.setVisible(false);
+                        mainApp.loadMainWindow();
+                        mainApp.switchToMainWindow();
                     } else {
                         statusLabel.setText("Failed to connect!");
                         tryAgainButton.setVisible(true);

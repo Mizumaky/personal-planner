@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="personalplanner" default="all">
+  
+  
+  <property file="Taskira.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.klib"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.zip"/>
+    <include name="*.ane"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/access-bridge-64.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunmscapi.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.maven:_antlr:antlr:2.7.7.classpath">
+    <pathelement location="${path.variable.maven_repository}/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.fasterxml:classmate:1.3.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/classmate/1.3.4/classmate-1.3.4.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.sun.istack:istack-commons-runtime:3.0.7.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.sun.xml.fastinfoset:fastinfoset:1.2.15.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/sun/xml/fastinfoset/FastInfoset/1.2.15/FastInfoset-1.2.15.jar"/>
+  </path>
+  
+  <path id="library.maven:_javax.activation:javax.activation-api:1.2.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath">
+    <pathelement location="${path.variable.maven_repository}/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2.jar"/>
+  </path>
+  
+  <path id="library.maven:_javax.xml.bind:jaxb-api:2.3.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_net.bytebuddy:byte-buddy:1.9.10.classpath">
+    <pathelement location="${path.variable.maven_repository}/net/bytebuddy/byte-buddy/1.9.10/byte-buddy-1.9.10.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.dom4j:dom4j:2.1.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/dom4j/dom4j/2.1.1/dom4j-2.1.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.glassfish.jaxb:jaxb-runtime:2.3.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/glassfish/jaxb/jaxb-runtime/2.3.1/jaxb-runtime-2.3.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.glassfish.jaxb:txw2:2.3.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.hibernate.common:hibernate-commons-annotations:5.1.0.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/hibernate/common/hibernate-commons-annotations/5.1.0.Final/hibernate-commons-annotations-5.1.0.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.hibernate:hibernate-core:5.4.2.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/hibernate/hibernate-core/5.4.2.Final/hibernate-core-5.4.2.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.javassist:javassist:3.24.0-ga.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/javassist/javassist/3.24.0-GA/javassist-3.24.0-GA.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jboss/logging/jboss-logging/3.3.2.Final/jboss-logging-3.3.2.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.1.1.Final/jboss-transaction-api_1.2_spec-1.1.1.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jboss:jandex:2.0.5.final.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jboss/jandex/2.0.5.Final/jandex-2.0.5.Final.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jetbrains:annotations:17.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.jvnet.staxex:stax-ex:1.8.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.postgresql:postgresql:42.2.5.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="forms-*.jar"/>
+    </fileset>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module personalplanner -->
+  
+  <dirname property="module.personalplanner.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.personalplanner" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.personalplanner" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.personalplanner" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.personalplanner" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="personalplanner.output.dir" value="${module.personalplanner.basedir}/target/classes"/>
+  <property name="personalplanner.testoutput.dir" value="${module.personalplanner.basedir}/target/test-classes"/>
+  
+  <path id="personalplanner.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="personalplanner.module.production.classpath">
+    <path refid="${module.jdk.classpath.personalplanner}"/>
+    <path refid="library.maven:_org.postgresql:postgresql:42.2.5.classpath"/>
+    <path refid="library.maven:_org.hibernate:hibernate-core:5.4.2.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.24.0-ga.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.9.10.classpath"/>
+    <path refid="library.maven:_antlr:antlr:2.7.7.classpath"/>
+    <path refid="library.maven:_org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.final.classpath"/>
+    <path refid="library.maven:_org.jboss:jandex:2.0.5.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_javax.activation:javax.activation-api:1.2.0.classpath"/>
+    <path refid="library.maven:_org.dom4j:dom4j:2.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.common:hibernate-commons-annotations:5.1.0.final.classpath"/>
+    <path refid="library.maven:_javax.xml.bind:jaxb-api:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:jaxb-runtime:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:txw2:2.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.istack:istack-commons-runtime:3.0.7.classpath"/>
+    <path refid="library.maven:_org.jvnet.staxex:stax-ex:1.8.classpath"/>
+    <path refid="library.maven:_com.sun.xml.fastinfoset:fastinfoset:1.2.15.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:17.0.0.classpath"/>
+  </path>
+  
+  <path id="personalplanner.runtime.production.module.classpath">
+    <pathelement location="${personalplanner.output.dir}"/>
+    <path refid="library.maven:_org.postgresql:postgresql:42.2.5.classpath"/>
+    <path refid="library.maven:_org.hibernate:hibernate-core:5.4.2.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.24.0-ga.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.9.10.classpath"/>
+    <path refid="library.maven:_antlr:antlr:2.7.7.classpath"/>
+    <path refid="library.maven:_org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.final.classpath"/>
+    <path refid="library.maven:_org.jboss:jandex:2.0.5.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_javax.activation:javax.activation-api:1.2.0.classpath"/>
+    <path refid="library.maven:_org.dom4j:dom4j:2.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.common:hibernate-commons-annotations:5.1.0.final.classpath"/>
+    <path refid="library.maven:_javax.xml.bind:jaxb-api:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:jaxb-runtime:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:txw2:2.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.istack:istack-commons-runtime:3.0.7.classpath"/>
+    <path refid="library.maven:_org.jvnet.staxex:stax-ex:1.8.classpath"/>
+    <path refid="library.maven:_com.sun.xml.fastinfoset:fastinfoset:1.2.15.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:17.0.0.classpath"/>
+  </path>
+  
+  <path id="personalplanner.module.classpath">
+    <path refid="${module.jdk.classpath.personalplanner}"/>
+    <pathelement location="${personalplanner.output.dir}"/>
+    <path refid="library.maven:_org.postgresql:postgresql:42.2.5.classpath"/>
+    <path refid="library.maven:_org.hibernate:hibernate-core:5.4.2.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.24.0-ga.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.9.10.classpath"/>
+    <path refid="library.maven:_antlr:antlr:2.7.7.classpath"/>
+    <path refid="library.maven:_org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.final.classpath"/>
+    <path refid="library.maven:_org.jboss:jandex:2.0.5.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_javax.activation:javax.activation-api:1.2.0.classpath"/>
+    <path refid="library.maven:_org.dom4j:dom4j:2.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.common:hibernate-commons-annotations:5.1.0.final.classpath"/>
+    <path refid="library.maven:_javax.xml.bind:jaxb-api:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:jaxb-runtime:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:txw2:2.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.istack:istack-commons-runtime:3.0.7.classpath"/>
+    <path refid="library.maven:_org.jvnet.staxex:stax-ex:1.8.classpath"/>
+    <path refid="library.maven:_com.sun.xml.fastinfoset:fastinfoset:1.2.15.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:17.0.0.classpath"/>
+  </path>
+  
+  <path id="personalplanner.runtime.module.classpath">
+    <pathelement location="${personalplanner.testoutput.dir}"/>
+    <pathelement location="${personalplanner.output.dir}"/>
+    <path refid="library.maven:_org.postgresql:postgresql:42.2.5.classpath"/>
+    <path refid="library.maven:_org.hibernate:hibernate-core:5.4.2.final.classpath"/>
+    <path refid="library.maven:_org.jboss.logging:jboss-logging:3.3.2.final.classpath"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.24.0-ga.classpath"/>
+    <path refid="library.maven:_net.bytebuddy:byte-buddy:1.9.10.classpath"/>
+    <path refid="library.maven:_antlr:antlr:2.7.7.classpath"/>
+    <path refid="library.maven:_org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.final.classpath"/>
+    <path refid="library.maven:_org.jboss:jandex:2.0.5.final.classpath"/>
+    <path refid="library.maven:_com.fasterxml:classmate:1.3.4.classpath"/>
+    <path refid="library.maven:_javax.activation:javax.activation-api:1.2.0.classpath"/>
+    <path refid="library.maven:_org.dom4j:dom4j:2.1.1.classpath"/>
+    <path refid="library.maven:_org.hibernate.common:hibernate-commons-annotations:5.1.0.final.classpath"/>
+    <path refid="library.maven:_javax.xml.bind:jaxb-api:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:jaxb-runtime:2.3.1.classpath"/>
+    <path refid="library.maven:_org.glassfish.jaxb:txw2:2.3.1.classpath"/>
+    <path refid="library.maven:_com.sun.istack:istack-commons-runtime:3.0.7.classpath"/>
+    <path refid="library.maven:_org.jvnet.staxex:stax-ex:1.8.classpath"/>
+    <path refid="library.maven:_com.sun.xml.fastinfoset:fastinfoset:1.2.15.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:17.0.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.personalplanner">
+    <patternset refid="ignored.files"/>
+    <exclude name="old/**"/>
+    <exclude name="old/generated/**"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.personalplanner">
+    <patternset refid="excluded.from.module.personalplanner"/>
+  </patternset>
+  
+  <path id="personalplanner.module.sourcepath">
+    <dirset dir="${module.personalplanner.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="personalplanner.module.test.sourcepath">
+    <dirset dir="${module.personalplanner.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.personalplanner" depends="compile.module.personalplanner.production,compile.module.personalplanner.tests" description="Compile module personalplanner"/>
+  
+  <target name="compile.module.personalplanner.production" depends="register.custom.compilers" description="Compile module personalplanner; production classes">
+    <mkdir dir="${personalplanner.output.dir}"/>
+    <javac2 destdir="${personalplanner.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.personalplanner}/javac">
+      <compilerarg line="${compiler.args.personalplanner}"/>
+      <bootclasspath refid="personalplanner.module.bootclasspath"/>
+      <classpath refid="personalplanner.module.production.classpath"/>
+      <src refid="personalplanner.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.personalplanner"/>
+    </javac2>
+    
+    <copy todir="${personalplanner.output.dir}">
+      <fileset dir="${module.personalplanner.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.personalplanner.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.personalplanner.tests" depends="register.custom.compilers,compile.module.personalplanner.production" description="compile module personalplanner; test classes" unless="skip.tests">
+    <mkdir dir="${personalplanner.testoutput.dir}"/>
+    <javac2 destdir="${personalplanner.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.personalplanner}/javac">
+      <compilerarg line="${compiler.args.personalplanner}"/>
+      <bootclasspath refid="personalplanner.module.bootclasspath"/>
+      <classpath refid="personalplanner.module.classpath"/>
+      <src refid="personalplanner.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.personalplanner"/>
+    </javac2>
+    
+    <copy todir="${personalplanner.testoutput.dir}">
+      <fileset dir="${module.personalplanner.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.personalplanner" description="cleanup module">
+    <delete dir="${personalplanner.output.dir}"/>
+    <delete dir="${personalplanner.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.personalplanner" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.personalplanner" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>

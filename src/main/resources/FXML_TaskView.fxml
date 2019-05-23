@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="170.0" prefHeight="2000.0" prefWidth="2000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerTaskTable">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="170.0" prefHeight="2000.0" prefWidth="2000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TaskViewController">
     <stylesheets>
         <URL value="@CSS_my_style_1.css" />
     </stylesheets>
@@ -42,6 +42,7 @@
                       <TableColumn fx:id="idColumn" minWidth="30.0" prefWidth="30.0" text="Id" />
                       <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="220.0" text="Name" />
                       <TableColumn fx:id="doneColumn" minWidth="40.0" prefWidth="50.0" text="Done" />
+                  <TableColumn fx:id="tagColumn" minWidth="40.0" prefWidth="707.0" text="Tags" />
                   </columns>
               </TableView>
          </children>

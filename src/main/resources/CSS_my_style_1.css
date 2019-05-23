@@ -1,5 +1,5 @@
 .root {
-    -fx-background-color: #f3fdff;
+    -fx-background-color: #f1f8ff;
 }
 
 .button {
@@ -47,6 +47,9 @@
 }
 .my-top-menu {
     -fx-background-color: #fefeff;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+    -fx-border-color: transparent transparent #1d4a71 transparent;
 }
 .my-pop-up {
     -fx-background-color: #fefeff;
@@ -54,5 +57,12 @@
 .my-strong-text {
     -fx-font-weight: bold;
     -fx-font-size: 12;
+}
+.my-status-bar {
+    -fx-background-color: #fefeff;
+    -fx-font-weight: bold;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+    -fx-border-color: #1d4a71 transparent transparent transparent;
 }
 

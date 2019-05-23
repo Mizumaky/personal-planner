@@ -66,14 +66,15 @@ public class TagEntity {
 
     @Override
     public String toString() {
-        return "TagEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", color=" + color +
-                //", tasks=" + tasks +
-                //", category=" + category +
-                '}' +
-                '\n';
+        return title;
+//        return "TagEntity{" +
+//                "id=" + id +
+//                ", title='" + title + '\'' +
+//                ", color=" + color +
+//                //", tasks=" + tasks +
+//                //", category=" + category +
+//                '}' +
+//                '\n';
     }
 
     @Override

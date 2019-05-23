@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
-public class ControllerSceneAddTask implements Initializable {
+public class TaskWindowController implements Initializable {
     @FXML
     TextField titleTextField;
     @FXML
@@ -28,7 +28,7 @@ public class ControllerSceneAddTask implements Initializable {
 
     private TaskEntity task = null;
 
-    public ControllerSceneAddTask() {}
+    public TaskWindowController() {}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,7 +57,7 @@ public class ControllerSceneAddTask implements Initializable {
         task = new TaskEntity(titleTextField.getText(),descTextArea.getText(),false, new HashSet<>());
         statusLabel.setVisible(true);
         statusLabel.setText("Adding to the database...");
-        if (!PersistenceManager.persist(task)) {
+        if (!PersistenceManager.getInstance().persist(task)) {
             statusLabel.setText("Error occured! Task was not added.");
             submitButton.setText("Try again");
             task = null;

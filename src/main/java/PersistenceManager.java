@@ -1,43 +1,43 @@
 import JPAobjects.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 //@Transactional
 
-public class PersistenceManager {
+public final class PersistenceManager {
+    private static PersistenceManager instance = null;
     private static EntityManagerFactory emFactory = null;
     private static EntityManager em = null;
 
     //disable constructor
-    private PersistenceManager() {}
-
-    public static boolean start() {
-        try {
-            if (emFactory == null) {
-                emFactory = Persistence.createEntityManagerFactory("TaskiraPersistence");
-                System.err.println("INFO[PersistanceManager]: EntityManagerFactory created.");
-                em = emFactory.createEntityManager();
-                System.err.println("INFO[PersistanceManager]: EntityManager created.");
-            } else {
-                System.err.println("WARNING[PersistanceManager]: EntityManagerFactory was already created, did nothing now.");
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    private PersistenceManager() {
     }
-    public static boolean refresh() {
+
+    public static PersistenceManager getInstance() {
+        if (instance == null) {
+            instance = new PersistenceManager();
+        }
+        return instance;
+    }
+
+    public boolean checkEMF() {
+        return emFactory != null && emFactory.isOpen();
+    }
+    public boolean checkEM() {
+        return em != null && em.isOpen();
+    }
+
+    public boolean connect() {
         try {
-            if (emFactory == null || !emFactory.isOpen()) {
+            if (!checkEMF()) {
                 emFactory = Persistence.createEntityManagerFactory("TaskiraPersistence");
                 System.err.println("INFO[PersistanceManager]: EntityManagerFactory created.");
             } else {
                 System.err.println("INFO[PersistanceManager]: The EntityManagerFactory is still open.");
             }
-            if (em == null || !em.isOpen()) {
+            if (!checkEM()) {
                 em = emFactory.createEntityManager();
                 System.err.println("INFO[PersistanceManager]: EntityManager created.");
             } else {
@@ -49,94 +49,89 @@ public class PersistenceManager {
             return false;
         }
     }
-    public static void close() {
-        if (em != null && em.isOpen()) {
-            em.close();
-            System.err.println("INFO[PersistanceManager]: EntityManager closed.");
-        } else {
-            System.err.println("WARNING[PersistanceManager]: There's no EntityManager to close.");
-        }
-        if (emFactory != null && emFactory.isOpen()) {
-            emFactory.close();
-            System.err.println("INFO[PersistanceManager]: EntityManagerFactory closed.");
-        } else {
-            System.err.println("WARNING[PersistanceManager]: There's no EntityManagerFactory to close.");
+
+    public boolean close() {
+        try {
+            if (checkEM()) {
+                em.close();
+                System.err.println("INFO[PersistanceManager]: EntityManager closed.");
+            } else {
+                System.err.println("WARNING[PersistanceManager]: There's no EntityManager to close.");
+            }
+            if (checkEMF()) {
+                emFactory.close();
+                System.err.println("INFO[PersistanceManager]: EntityManagerFactory closed.");
+            } else {
+                System.err.println("WARNING[PersistanceManager]: There's no EntityManagerFactory to close.");
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 //----------------------------------------------------------------------
 
-    public static <T> boolean persist(T entity) {
+    private <T> boolean writeTransaction(Callable<T> callable) {
         try {
             em.getTransaction().begin();
+            callable.call();
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+        }
+    }
+    private <T> T readTransaction(Callable<T> callable) {
+        try {
+            em.getTransaction().begin();
+            T ret = callable.call();
+            em.getTransaction().commit();
+            return ret;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+        }
+    }
 
+    public <T> boolean persist(T entity) {
+        return writeTransaction((Callable<Void>) () -> {
             em.persist(entity);
-
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-            return false;
-        }
+            return null;
+        });
     }
-    public static <T> boolean merge(T entity) {
-        try {
-            em.getTransaction().begin();
-
+    public <T> boolean merge(T entity) {
+        return writeTransaction((Callable<Void>) () -> {
             em.merge(entity);
-
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-            return false;
-        }
+            return null;
+        });
     }
-    public static <T> boolean remove(T entity) {
-        try {
-            em.getTransaction().begin();
-
+    public <T> boolean remove(T entity) {
+        return writeTransaction((Callable<Void>) () -> {
             em.remove(entity);
-
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-            return false;
-        }
+            return null;
+        });
     }
-    public static List<TaskEntity> fetchAllTasks() {
-        try {
-            em.getTransaction().begin();
 
+    public List<TaskEntity> fetchAllTasks() {
+        return readTransaction((Callable<List<TaskEntity>>) () -> {
             TypedQuery<TaskEntity> query = em.createNamedQuery("TaskEntity.findAll", TaskEntity.class);
-            List<TaskEntity> tasks = query.getResultList();
-
-            em.getTransaction().commit();
-            return tasks;
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-            return null;
-        }
+            return query.getResultList();
+        });
     }
-    public static List<TagEntity> fetchAllTags() {
-        try {
-            em.getTransaction().begin();
-
+    public List<TagEntity> fetchAllTags() {
+        return readTransaction((Callable<List<TagEntity>>) () -> {
             TypedQuery<TagEntity> query = em.createQuery("SELECT t from TagEntity as t", TagEntity.class);
-            List<TagEntity> tags = query.getResultList();
-
-            em.getTransaction().commit();
-            return tags;
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-            return null;
-        }
+            return query.getResultList();
+        });
     }
-    //public static
+
 
 }

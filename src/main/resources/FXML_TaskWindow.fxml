@@ -12,13 +12,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="my-pop-up" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerSceneAddTask">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="my-pop-up" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TaskWindowController">
     <stylesheets>
         <URL value="@CSS_my_style_1.css" />
     </stylesheets>
     <top>
         <HBox alignment="CENTER" prefHeight="25.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <Label fx:id="statusLabel" styleClass="my-big-label" text="Add a new task" />
+            <Label styleClass="my-big-label" text="Add a new task" />
         </HBox>
     </top>
    <left>

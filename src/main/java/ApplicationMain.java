@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,10 +35,10 @@ public class ApplicationMain extends Application {
 
     public void loadConnectionWindow() {
         try {
-            FXMLLoader connectionPaneLoader = new FXMLLoader(getClass().getResource("FXML_scene_connection.fxml"));
+            FXMLLoader connectionPaneLoader = new FXMLLoader(getClass().getResource("FXML_ConnectionWindow.fxml"));
             Parent root = connectionPaneLoader.load(); //loads the scene graph and instantiates the associated controller
             connectionScene = new Scene(root, 300, 70);
-            ControllerSceneConnection cwc = connectionPaneLoader.getController();
+            ConnectionWindowController cwc = connectionPaneLoader.getController();
             cwc.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,10 +51,10 @@ public class ApplicationMain extends Application {
 
     public void loadMainWindow() {
         try {
-            FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_scene_main.fxml"));
+            FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
             Parent root = mainPaneLoader.load(); //also instantiates the associated controller
             mainScene = new Scene(root, 1000, 600);
-            ControllerSceneMain mwc = mainPaneLoader.getController();
+            MainController mwc = mainPaneLoader.getController();
             mwc.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();

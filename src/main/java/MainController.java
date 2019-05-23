@@ -2,23 +2,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 
 import java.util.Optional;
 
-public class ControllerSceneMain {
+public class MainController extends Controller {
     @FXML //so that even if its private, the loader can access it
     private MenuItem fileQuit;
-
-    private ApplicationMain mainApp;
-    public void setMainApp(ApplicationMain mainApp) {
-        this.mainApp = mainApp;
-    }
-
-    public ControllerSceneMain() {
-    }
-
-    //can also have initialize method, and also a private URL location attribute, and also ResourceBundle resources attribute
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private ImageView ok;
+    @FXML
+    private ImageView error;
 
     @FXML
     protected void handleFileQuitMenuAction(ActionEvent event) {
@@ -33,4 +31,6 @@ public class ControllerSceneMain {
             System.exit(0);
         }
     }
+
+
 }

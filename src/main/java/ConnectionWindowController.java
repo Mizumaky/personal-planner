@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 
-public class ControllerSceneConnection {
+public class ConnectionWindowController {
     @FXML
     Label statusLabel;
     @FXML
@@ -22,7 +22,7 @@ public class ControllerSceneConnection {
         this.mainApp = mainApp;
     }
 
-    public ControllerSceneConnection() {}
+    public ConnectionWindowController() {}
 
     @FXML
     public void initialize() {

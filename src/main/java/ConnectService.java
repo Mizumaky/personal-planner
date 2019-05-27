@@ -11,28 +11,27 @@ public class ConnectService extends Service<Boolean> {
     protected Task<Boolean> createTask() {
         return new Task<Boolean>() {
             @Override
-            protected Boolean call() throws Exception {
-                PersistenceManager pm = PersistenceManager.getInstance();
+            protected Boolean call() {
+                try {
+                    PersistenceManager pm = PersistenceManager.getInstance();
+                    this.updateMessage("Connecting to the database...");
+                    pm.connect();
 
-                this.updateMessage("Connecting to the database...");
-                boolean startup = pm.connect();
-                if (startup) {
-
-                    this.updateMessage("Test 1: Getting and printing tags...");
+                    this.updateMessage("Connection test 1: Getting and printing tags...");
                     List<TagEntity> tags = pm.fetchAllTags();
                     System.out.println(tags);
-                    if (tags != null) {
 
-                        this.updateMessage("Test 2: Getting and printing tasks...");
-                        List<TaskEntity> tasks = pm.fetchAllTasks();
-                        System.out.println(tasks);
-                        if (tasks != null)
+                    this.updateMessage("Connection test 2: Getting and printing tasks...");
+                    List<TaskEntity> tasks = pm.fetchAllTasks();
+                    System.out.println(tasks);
 
-                            return true;
-                    }
+                    this.updateMessage("Succesfully connected.");
+                    return true;
+
+                } catch (DBErrorException e) {
+                    this.updateMessage("Connection failed!");
+                    return false;
                 }
-                //this.updateMessage("Error occured, closing connection...");
-                return false;
             }
         };
     }

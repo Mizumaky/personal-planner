@@ -7,8 +7,7 @@ public abstract class Controller implements Initializable {
     private ApplicationMain mainApp;
     private PersistenceManager pm;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public Controller(){
         pm = PersistenceManager.getInstance();
     }
 

@@ -1,5 +1,6 @@
 import JPAobjects.TagEntity;
 import JPAobjects.TaskEntity;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +28,9 @@ public class TaskWindowController implements Initializable {
     Label statusLabel;
 
     private TaskEntity task = null;
+    private AddTaskService atsvc;
+
+    //private
 
     public TaskWindowController() {}
 
@@ -35,9 +39,24 @@ public class TaskWindowController implements Initializable {
         titleTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             submitButton.setDisable(newValue.trim().isEmpty());
         });
+        atsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                wse -> {
+                    atsvc.reset();
+                    ControllerCommunicator.getInstance().unbindStatusBar();
+                    ControllerCommunicator.getInstance().enableDBButtons();
+                    if (atsvc.getValue()) {
+                    } else {
+                        submitButton.setText("Try again");
+                        submitButton.setDisable(false);
+                    }
+                });
     }
 
-    public TaskEntity getResult() {
+    public void setTask(TaskEntity task) {
+        this.task = task;
+    }
+
+    public TaskEntity getTask() {
         return task;
     }
 
@@ -55,15 +74,9 @@ public class TaskWindowController implements Initializable {
     private void handleSubmitButtonAction(ActionEvent event) {
         submitButton.setDisable(true);
         task = new TaskEntity(titleTextField.getText(),descTextArea.getText(),false, new HashSet<>());
-        statusLabel.setVisible(true);
-        statusLabel.setText("Adding to the database...");
-        if (!PersistenceManager.getInstance().persist(task)) {
-            statusLabel.setText("Error occured! Task was not added.");
-            submitButton.setText("Try again");
-            task = null;
-        } else {
-            closeStage(event);
-        }
-        submitButton.setDisable(false);
+        AddTaskService atsvc = new AddTaskService();
+        ControllerCommunicator.getInstance().bindStatusBar(atsvc);
+        ControllerCommunicator.getInstance().disableDBButtons();
+        closeStage(event);
     }
 }

@@ -51,12 +51,10 @@ public class ConnectionWindowController {
                     boolean result = connectService.getValue();
                     statusLabel.textProperty().unbind();
                     if (result) {
-                        statusLabel.setText("Succesfully connected!");
                         cancelButton.setVisible(false);
                         mainApp.loadMainWindow();
                         mainApp.switchToMainWindow();
                     } else {
-                        statusLabel.setText("Failed to connect!");
                         tryAgainButton.setVisible(true);
                     }
                 });

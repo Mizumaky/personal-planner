@@ -1,12 +1,11 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class MainController extends Controller {
     @FXML //so that even if its private, the loader can access it
@@ -14,9 +13,23 @@ public class MainController extends Controller {
     @FXML
     private Label statusLabel;
     @FXML
+    private ProgressIndicator progressIndicator;
+    @FXML
     private ImageView ok;
     @FXML
-    private ImageView error;
+    private ImageView failed;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ControllerCommunicator.getInstance().registerMainController(this);
+        statusLabel.setText("Ready");
+        ok.setVisible(true);
+        ok.setManaged(true);
+        failed.setVisible(false);
+        failed.setManaged(false);
+        progressIndicator.setVisible(false);
+        progressIndicator.setManaged(false);
+    }
 
     @FXML
     protected void handleFileQuitMenuAction(ActionEvent event) {
@@ -32,5 +45,19 @@ public class MainController extends Controller {
         }
     }
 
+    public Label getStatusLabel() {
+        return statusLabel;
+    }
 
+    public ProgressIndicator getProgressIndicator() {
+        return progressIndicator;
+    }
+
+    public ImageView getOk() {
+        return ok;
+    }
+
+    public ImageView getFailed() {
+        return failed;
+    }
 }

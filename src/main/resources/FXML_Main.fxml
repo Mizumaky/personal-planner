@@ -109,15 +109,15 @@
       <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="9.0" styleClass="my-status-bar" BorderPane.alignment="CENTER">
          <children>
             <Label text="Status:" />
-            <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS" />
+            <HBox fx:id="statusBar" alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS" />
             <Label fx:id="statusLabel" text="Label" />
-            <ProgressIndicator prefHeight="17.0" prefWidth="17.0" progress="0.0" />
+            <ProgressIndicator fx:id="progressIndicator" prefHeight="17.0" prefWidth="17.0" progress="0.0" />
             <ImageView fx:id="ok" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                  <image>
                      <Image url="@ok.png" />
                  </image>
             </ImageView>
-            <ImageView fx:id="error" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="failed" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                 <image>
                     <Image url="@error.png" />
                 </image>

@@ -71,6 +71,7 @@ public final class PersistenceManager {
 
     private <T> void writeTransaction(Callable callable) throws DBErrorException {
         try {
+            connect();
             em.getTransaction().begin();
             callable.call();
             em.getTransaction().commit();
@@ -84,6 +85,7 @@ public final class PersistenceManager {
     }
     private <T> T readTransaction(Callable<T> callable) throws DBErrorException {
         try {
+            connect();
             em.getTransaction().begin();
             T ret = callable.call();
             em.getTransaction().commit();

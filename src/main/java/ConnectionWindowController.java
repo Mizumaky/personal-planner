@@ -1,11 +1,19 @@
-import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 
-public class ConnectionWindowController {
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import static java.lang.System.exit;
+
+public class ConnectionWindowController extends Controller {
     @FXML
     Label statusLabel;
     @FXML
@@ -15,22 +23,39 @@ public class ConnectionWindowController {
     @FXML
     ProgressIndicator progressIndicator;
 
-    private ConnectService connectService;
-
-    private ApplicationMain mainApp;
-    public void setMainApp(ApplicationMain mainApp) {
-        this.mainApp = mainApp;
-    }
-
-    public ConnectionWindowController() {}
+    private ConnectService csvc;
 
     @FXML
-    public void initialize() {
-        connectService = new ConnectService();
-        statusLabel.textProperty().unbind();
+    public void initialize(URL location, ResourceBundle resources) {
+        csvc = new ConnectService();
         statusLabel.setText("Initializing...");
-        statusLabel.textProperty().bind(connectService.messageProperty());
-        progressIndicator.visibleProperty().bind(connectService.runningProperty());
+        statusLabel.textProperty().unbind();
+        statusLabel.textProperty().bind(csvc.messageProperty());
+        progressIndicator.managedProperty().bind(csvc.runningProperty());
+        progressIndicator.visibleProperty().bind(csvc.runningProperty());
+
+        csvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                wse -> {
+                    boolean result = csvc.getValue();
+                    statusLabel.textProperty().unbind();
+                    if (result) {
+                        cancelButton.setVisible(false);
+                        try {
+                            FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
+                            Parent root = mainPaneLoader.load(); //also instantiates the associated controller
+                            Scene mainScene = new Scene(root, 1000, 600);
+                            thisStage.setScene(mainScene);
+                            MainWindowController mwc = mainPaneLoader.getController();
+                            mwc.setStageReference(thisStage);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            exit(1);
+                        }
+
+                    } else {
+                        tryAgainButton.setVisible(true);
+                    }
+                });
         cancelButton.setOnAction(event -> {
             cancelButton.setDisable(true);
             statusLabel.textProperty().unbind();
@@ -39,27 +64,14 @@ public class ConnectionWindowController {
         });
         tryAgainButton.setOnAction(event -> {
             tryAgainButton.setVisible(false);
-            statusLabel.textProperty().unbind();
             statusLabel.setText("Retrying...");
-            Task newConnectTask = connectService.createTask();
-            statusLabel.textProperty().bind(connectService.messageProperty());
-            connectService.reset();
-            connectService.start();
+            statusLabel.textProperty().unbind();
+            statusLabel.textProperty().bind(csvc.messageProperty());
+            csvc.reset();
+            csvc.start();
         });
-        connectService.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
-                wse -> {
-                    boolean result = connectService.getValue();
-                    statusLabel.textProperty().unbind();
-                    if (result) {
-                        cancelButton.setVisible(false);
-                        mainApp.loadMainWindow();
-                        mainApp.switchToMainWindow();
-                    } else {
-                        tryAgainButton.setVisible(true);
-                    }
-                });
 
         // Start new connection task using the service
-        connectService.start();
+        csvc.start();
     }
 }

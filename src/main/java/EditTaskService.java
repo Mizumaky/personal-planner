@@ -2,8 +2,7 @@ import JPAobjects.TaskEntity;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class DeleteTaskService extends Service<Boolean> {
-
+public class EditTaskService extends Service<Boolean> {
     private TaskEntity task = null;
 
     public void setTask(TaskEntity task) {
@@ -19,16 +18,15 @@ public class DeleteTaskService extends Service<Boolean> {
             @Override
             protected Boolean call() {
                 try {
-                    this.updateMessage("Deleting task from database...");
-                    PersistenceManager.getInstance().remove(task);
-                    this.updateMessage("Delete successful.");
+                    this.updateMessage("Editing task in the database...");
+                    PersistenceManager.getInstance().persist(task);
+                    this.updateMessage("Edit successful.");
                     return true;
                 } catch (DBErrorException e) {
-                    this.updateMessage("Deleting failed!");
+                    this.updateMessage("Editing failed!");
                     return false;
                 }
             }
         };
     }
-
 }

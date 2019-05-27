@@ -1,10 +1,8 @@
 import JPAobjects.TaskEntity;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,7 +20,7 @@ import java.util.ResourceBundle;
 
 import static java.lang.System.exit;
 
-public class TaskViewController implements Initializable {
+public class TaskViewController extends Controller {
     @FXML
     private TableView<TaskEntity> tableView;
     @FXML
@@ -43,17 +41,11 @@ public class TaskViewController implements Initializable {
     private Button deleteButton;
 
     private ObservableList<TaskEntity> tableData;
-    private ApplicationMain mainApp;
+    private Stage taskStage = null;
     private RefreshService rsvc;
     private DeleteTaskService dtsvc;
 
-    public void setMainApp(ApplicationMain mainApp) {
-        this.mainApp = mainApp;
-    }
-
-    public TaskViewController() {}
-
-    @Override
+    @FXML
     public void initialize(URL location, ResourceBundle resources) {
         ControllerCommunicator.getInstance().registerTaskViewController(this);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -61,9 +53,9 @@ public class TaskViewController implements Initializable {
         doneColumn.setCellValueFactory(new PropertyValueFactory<>("is_done"));
         tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
 
+        //CREATE SERVICES
         rsvc = new RefreshService();
         dtsvc = new DeleteTaskService();
-
         //ASSIGN ON SUCCEED METHODS
         rsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
@@ -75,37 +67,34 @@ public class TaskViewController implements Initializable {
                     }
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
-                    //tableView.refresh(); //TODO necessary?
-                    //tableView.getItems().add(rsvc.getTask()); //OR THIS?
-                    rsvc.reset();
                 });
         dtsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
-                    //tableView.refresh(); //TODO necessary?
-                    //tableView.getItems().remove(dtsvc.getTask()); //OR THIS?
-                    dtsvc.reset();
+                    tableData.remove(dtsvc.getTask());
                 });
 
-        //INITIAL DATA LOAD
-
-        tableView.setItems(rsvc.getResult()); //TODO NEED TO SET ONLY ONCE?
-        //refreshTasks(); //TODO
+        //ASSIGN REFRESH SERVICE RESULT
+        tableData = rsvc.getResult();
+        tableView.setItems(tableData); //TODO NEED TO SET ONLY ONCE?
     }
 
-    public void disableButtons() {
-        refreshButton.setDisable(true);
-        addTaskButton.setDisable(true);
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
+    public void manualInit() {
+        refreshTasks();
     }
 
-    public void enableButtons() {
-        refreshButton.setDisable(false);
-        addTaskButton.setDisable(false);
-        editButton.setDisable(false);
-        deleteButton.setDisable(false);
+    @FXML
+    private void handleAddTaskButtonAction() {
+        createTaskWindow(null);
+    }
+
+    @FXML
+    private void handleEditButtonAction() {
+        TaskEntity task = tableView.getSelectionModel().getSelectedItem();
+        if (task != null) {
+            createTaskWindow(task);
+        }
     }
 
     @FXML
@@ -113,46 +102,69 @@ public class TaskViewController implements Initializable {
         refreshTasks();
     }
 
-    private void refreshTasks() {
-        tableView.setPlaceholder(new Label("Loading..."));
-        ControllerCommunicator.getInstance().bindStatusBar(rsvc);
-        ControllerCommunicator.getInstance().disableDBButtons();
-        rsvc.start();
+    @FXML
+    private void handleDeleteButtonAction() {
+        deleteTasks();
     }
 
-    @FXML
-    private void handleAddTaskButtonAction() {
+    private void createTaskWindow(TaskEntity task) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXML_TaskWindow.fxml"));
+            fxmlLoader.setControllerFactory(clazz -> {
+                return new TaskWindowController(task);
+            });
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 600, 400);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(scene);
-            stage.getIcons().add(new Image(getClass().getResourceAsStream( "icon.png" )));
+            taskStage = new Stage();
+            taskStage.initModality(Modality.APPLICATION_MODAL);
+            taskStage.setScene(scene);
+            taskStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
             TaskWindowController twc = fxmlLoader.getController();
-            //twc.
-            //stage.showAndWait();
+            twc.setStageReference(taskStage);
+            taskStage.show();
         } catch (IOException e) {
             e.printStackTrace();
             exit(1);
         }
     }
 
-    @FXML
-    private void handleEditButtonAction() {
-
+    private void refreshTasks() {
+        tableView.setPlaceholder(new Label("Loading..."));
+        ControllerCommunicator.getInstance().bindStatusBar(rsvc);
+        ControllerCommunicator.getInstance().disableDBButtons();
+        rsvc.reset();
+        rsvc.start();
     }
 
-    @FXML
-    private void handleDeleteButtonAction() {
+    private void deleteTasks() {
         TaskEntity task = tableView.getSelectionModel().getSelectedItem();
         if (task != null) {
             // there is a selection -> delete
             dtsvc.setTask(task);
-            ControllerCommunicator.getInstance().bindStatusBar(rsvc);
+            ControllerCommunicator.getInstance().bindStatusBar(dtsvc);
             ControllerCommunicator.getInstance().disableDBButtons();
+            dtsvc.reset();
             dtsvc.start();
         }
+    }
+
+    public TableView<TaskEntity> getTable() {
+        return tableView;
+    }
+
+    public void disableButtons() {
+        refreshButton.setDisable(true);
+        addTaskButton.setDisable(true);
+        editButton.disableProperty().unbind();
+        editButton.setDisable(true);
+        deleteButton.disableProperty().unbind();
+        deleteButton.setDisable(true);
+    }
+
+    public void enableButtons() {
+        refreshButton.setDisable(false);
+        addTaskButton.setDisable(false);
+        editButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
+        deleteButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
     }
 }

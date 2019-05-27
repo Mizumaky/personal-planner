@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class MainController extends Controller {
+public class MainWindowController extends Controller {
     @FXML //so that even if its private, the loader can access it
     private MenuItem fileQuit;
     @FXML
@@ -29,6 +29,7 @@ public class MainController extends Controller {
         failed.setManaged(false);
         progressIndicator.setVisible(false);
         progressIndicator.setManaged(false);
+        ControllerCommunicator.getInstance().secondaryInitTaskView();
     }
 
     @FXML

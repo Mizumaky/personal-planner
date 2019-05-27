@@ -22,7 +22,7 @@ public class RefreshService extends Service<Boolean> {
                 try {
                     List<TaskEntity> taskList = PersistenceManager.getInstance().fetchAllTasks();
                     result.addAll(taskList);
-                    this.updateMessage("Successfully reloaded.");
+                    this.updateMessage("Successfully refreshed.");
                     return true;
                 } catch (DBErrorException e) {
                     this.updateMessage("Database connection error!");

@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -25,8 +24,8 @@ public class TaskWindowController extends Controller {
     Label statusLabel;
 
     private TaskEntity task = null;
-    private AddTaskService atsvc = null;
-    private EditTaskService etsvc = null;
+    private TaskAddService tasvc = null;
+    private TaskEditService tesvc = null;
 
     public TaskWindowController(TaskEntity task) {
         super();
@@ -35,15 +34,15 @@ public class TaskWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        atsvc = new AddTaskService();
-        etsvc = new EditTaskService();
+        tasvc = new TaskAddService();
+        tesvc = new TaskEditService();
         titleTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             submitButton.setDisable(newValue.trim().isEmpty());
         });
-        atsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+        tasvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
-                    if (atsvc.getValue()) {
-                        ControllerCommunicator.getInstance().getTaskViewData().getItems().add(atsvc.getTask());
+                    if (tasvc.getValue()) {
+                        ControllerCommunicator.getInstance().getTaskViewData().getItems().add(tasvc.getTask());
                     } else {
                         thisStage.show();
                         task = null;
@@ -53,9 +52,9 @@ public class TaskWindowController extends Controller {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
                 });
-        etsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+        tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
-                    if (etsvc.getValue()) {
+                    if (tesvc.getValue()) {
                         ControllerCommunicator.getInstance().getTaskViewData().refresh();
                     } else {
                         thisStage.show();
@@ -81,19 +80,19 @@ public class TaskWindowController extends Controller {
         submitButton.setDisable(true);
         ControllerCommunicator.getInstance().disableDBButtons();
         if (task != null) {
-            ControllerCommunicator.getInstance().bindStatusBar(etsvc);
+            ControllerCommunicator.getInstance().bindStatusBar(tesvc);
             task.setTitle(titleTextField.getText());
             task.setDescription(descTextArea.getText());
             //task.setTags(); //TODO
-            etsvc.reset();
-            etsvc.setTask(task);
-            etsvc.start();
+            tesvc.reset();
+            tesvc.setTask(task);
+            tesvc.start();
         } else {
-            ControllerCommunicator.getInstance().bindStatusBar(atsvc);
+            ControllerCommunicator.getInstance().bindStatusBar(tasvc);
             task = new TaskEntity(titleTextField.getText(), descTextArea.getText(),false, new HashSet<>());
-            atsvc.reset();
-            atsvc.setTask(task);
-            atsvc.start();
+            tasvc.reset();
+            tasvc.setTask(task);
+            tasvc.start();
         }
 
         thisStage.close();

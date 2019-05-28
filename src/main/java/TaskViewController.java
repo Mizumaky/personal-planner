@@ -42,10 +42,10 @@ public class TaskViewController extends Controller {
 
     private ObservableList<TaskEntity> tableData;
     private Stage taskStage = null;
-    private RefreshService rsvc;
-    private DeleteTaskService dtsvc;
+    private TaskRefreshService trsvc;
+    private TaskDeleteService tdsvc;
 
-    @FXML
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         ControllerCommunicator.getInstance().registerTaskViewController(this);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -54,12 +54,12 @@ public class TaskViewController extends Controller {
         tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
 
         //CREATE SERVICES
-        rsvc = new RefreshService();
-        dtsvc = new DeleteTaskService();
+        trsvc = new TaskRefreshService();
+        tdsvc = new TaskDeleteService();
         //ASSIGN ON SUCCEED METHODS
-        rsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+        trsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
-                    if (rsvc.getValue()) {
+                    if (trsvc.getValue()) {
                         tableView.setPlaceholder(new Label("No tasks :]"));
                     }
                     else {
@@ -68,19 +68,19 @@ public class TaskViewController extends Controller {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
                 });
-        dtsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+        tdsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
-                    tableData.remove(dtsvc.getTask());
+                    tableData.remove(tdsvc.getTask());
                 });
 
         //ASSIGN REFRESH SERVICE RESULT
-        tableData = rsvc.getResult();
+        tableData = trsvc.getResult();
         tableView.setItems(tableData); //TODO NEED TO SET ONLY ONCE?
     }
 
-    public void manualInit() {
+    public void secondaryInit() {
         refreshTasks();
     }
 
@@ -130,21 +130,21 @@ public class TaskViewController extends Controller {
 
     private void refreshTasks() {
         tableView.setPlaceholder(new Label("Loading..."));
-        ControllerCommunicator.getInstance().bindStatusBar(rsvc);
+        ControllerCommunicator.getInstance().bindStatusBar(trsvc);
         ControllerCommunicator.getInstance().disableDBButtons();
-        rsvc.reset();
-        rsvc.start();
+        trsvc.reset();
+        trsvc.start();
     }
 
     private void deleteTasks() {
         TaskEntity task = tableView.getSelectionModel().getSelectedItem();
         if (task != null) {
             // there is a selection -> delete
-            dtsvc.setTask(task);
-            ControllerCommunicator.getInstance().bindStatusBar(dtsvc);
+            tdsvc.setTask(task);
+            ControllerCommunicator.getInstance().bindStatusBar(tdsvc);
             ControllerCommunicator.getInstance().disableDBButtons();
-            dtsvc.reset();
-            dtsvc.start();
+            tdsvc.reset();
+            tdsvc.start();
         }
     }
 

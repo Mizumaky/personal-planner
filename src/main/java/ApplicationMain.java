@@ -22,7 +22,7 @@ public class ApplicationMain extends Application {
             FXMLLoader connectionPaneLoader = new FXMLLoader(getClass().getResource("FXML_ConnectionWindow.fxml"));
             Parent root = connectionPaneLoader.load(); //loads the scene graph and instantiates the associated controller
             Scene connectionScene = new Scene(root, 300, 70);
-            ConnectionWindowController cwc = connectionPaneLoader.getController();
+            ConnectWindowController cwc = connectionPaneLoader.getController();
             cwc.setStageReference(primaryStage);
             primaryStage.setScene(connectionScene);
             primaryStage.show();

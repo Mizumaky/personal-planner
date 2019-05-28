@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -30,6 +31,7 @@ public class MainWindowController extends Controller {
         progressIndicator.setVisible(false);
         progressIndicator.setManaged(false);
         ControllerCommunicator.getInstance().secondaryInitTaskView();
+        ControllerCommunicator.getInstance().secondaryInitTagView();
     }
 
     @FXML
@@ -41,8 +43,7 @@ public class MainWindowController extends Controller {
         alert.getDialogPane().getStylesheets().add(getClass().getResource("CSS_my_style_1.css").toExternalForm());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            //TODO send message to model so that it properly closes
-            System.exit(0);
+            Platform.exit();
         }
     }
 

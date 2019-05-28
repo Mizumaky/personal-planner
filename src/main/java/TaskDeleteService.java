@@ -2,7 +2,8 @@ import JPAobjects.TaskEntity;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class AddTaskService extends Service<Boolean> {
+public class TaskDeleteService extends Service<Boolean> {
+
     private TaskEntity task = null;
 
     public void setTask(TaskEntity task) {
@@ -18,15 +19,16 @@ public class AddTaskService extends Service<Boolean> {
             @Override
             protected Boolean call() {
                 try {
-                    this.updateMessage("Adding task to database...");
-                    PersistenceManager.getInstance().persist(task);
-                    this.updateMessage("Adding successful.");
+                    this.updateMessage("Deleting task from database...");
+                    PersistenceManager.getInstance().remove(task);
+                    this.updateMessage("Delete successful.");
                     return true;
                 } catch (DBErrorException e) {
-                    this.updateMessage("Adding failed!");
+                    this.updateMessage("Deleting failed!");
                     return false;
                 }
             }
         };
     }
+
 }

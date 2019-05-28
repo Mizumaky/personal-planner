@@ -2,7 +2,7 @@ import JPAobjects.TaskEntity;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class EditTaskService extends Service<Boolean> {
+public class TaskEditService extends Service<Boolean> {
     private TaskEntity task = null;
 
     public void setTask(TaskEntity task) {

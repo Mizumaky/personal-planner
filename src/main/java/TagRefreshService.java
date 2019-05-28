@@ -1,16 +1,16 @@
-import JPAobjects.TaskEntity;
+import JPAobjects.CategoryEntity;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class RefreshService extends Service<Boolean> {
-    private ObservableList<TaskEntity> result = FXCollections.observableArrayList();
-
-    public ObservableList<TaskEntity> getResult() { return result; }
+public class TagRefreshService extends Service<Boolean> {
+    private ArrayList<CategoryEntity> result = new ArrayList<>();
+    public ArrayList<CategoryEntity> getResult() { return result; }
 
     @Override
     protected Task<Boolean> createTask() {
@@ -18,11 +18,11 @@ public class RefreshService extends Service<Boolean> {
             @Override
             protected Boolean call() {
                 result.clear();
-                this.updateMessage("Reloading data from database...");
+                this.updateMessage("Reloading tags from database...");
                 try {
-                    List<TaskEntity> taskList = PersistenceManager.getInstance().fetchAllTasks();
-                    result.addAll(taskList);
-                    this.updateMessage("Successfully refreshed.");
+                    List<CategoryEntity> list = PersistenceManager.getInstance().fetchRootCategories();
+                    result.addAll(list);
+                    this.updateMessage("Tags successfully refreshed.");
                     return true;
                 } catch (DBErrorException e) {
                     this.updateMessage("Database connection error!");

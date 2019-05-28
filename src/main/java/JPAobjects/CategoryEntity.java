@@ -5,6 +5,9 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "category", schema = "public")
+@NamedQueries({
+        @NamedQuery(name = "CategoryEntity.findAll", query = "select c from CategoryEntity c where c.parent = null")
+})
 public class CategoryEntity {
     @Id
     @GeneratedValue
@@ -18,11 +21,11 @@ public class CategoryEntity {
     private CategoryEntity parent;
 
     //derived field from parent db column
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     //@OrderColumn
     private Collection<CategoryEntity> subcategories;
 
-    @OneToMany (mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     //@OrderColumn
     private Collection<TagEntity> tags;
 
@@ -68,13 +71,14 @@ public class CategoryEntity {
 
     @Override
     public String toString() {
-        return "CategoryEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", parent=" + parent +
-                ", subcategories=" + subcategories +
-                ", tags=" + tags +
-                '}' +
-                '\n';
+        return title;
+//        return "CategoryEntity{" +
+//                "id=" + id +
+//                ", title='" + title + '\'' +
+//                ", parent=" + parent +
+//                ", subcategories=" + subcategories +
+//                ", tags=" + tags +
+//                '}' +
+//                '\n';
     }
 }

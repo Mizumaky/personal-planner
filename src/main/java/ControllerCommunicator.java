@@ -6,6 +6,7 @@ public class ControllerCommunicator {
     private static ControllerCommunicator instance = null;
     private static MainWindowController mainWindowController = null;
     private static TaskViewController taskViewController = null;
+    private static TagViewController tagViewController = null;
 
     //disable constructor
     private ControllerCommunicator() {
@@ -23,9 +24,15 @@ public class ControllerCommunicator {
     public void registerTaskViewController(TaskViewController ctrlr) {
         taskViewController = ctrlr;
     }
+    public void registerTagViewController(TagViewController ctrlr) {
+        tagViewController = ctrlr;
+    }
 
     public void secondaryInitTaskView() {
-        taskViewController.manualInit();
+        taskViewController.secondaryInit();
+    }
+    public void secondaryInitTagView() {
+        tagViewController.secondaryInit();
     }
 
     public TableView<TaskEntity> getTaskViewData() {
@@ -35,18 +42,26 @@ public class ControllerCommunicator {
     public void disableDBButtons() {
         if (taskViewController != null) {
             taskViewController.disableButtons();
-            //add more
         } else {
             System.err.println("Could not disable buttons, task view controller not registered.");
+        }
+        if (tagViewController != null) {
+            tagViewController.disableButtons();
+        } else {
+            System.err.println("Could not disable buttons, tag view controller not registered.");
         }
     }
 
     public void enableDBButtons() {
         if (taskViewController != null) {
             taskViewController.enableButtons();
-            //add more
         } else {
             System.err.println("Could not enable buttons, task view controller not registered.");
+        }
+        if (tagViewController != null) {
+            tagViewController.enableButtons();
+        } else {
+            System.err.println("Could not enable buttons, tag view controller not registered.");
         }
     }
 

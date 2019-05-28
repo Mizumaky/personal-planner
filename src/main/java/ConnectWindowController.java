@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 import static java.lang.System.exit;
 
-public class ConnectionWindowController extends Controller {
+public class ConnectWindowController extends Controller {
     @FXML
     Label statusLabel;
     @FXML
@@ -43,7 +43,7 @@ public class ConnectionWindowController extends Controller {
                         try {
                             FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
                             Parent root = mainPaneLoader.load(); //also instantiates the associated controller
-                            Scene mainScene = new Scene(root, 1000, 600);
+                            Scene mainScene = new Scene(root, 1200, 800);
                             thisStage.setScene(mainScene);
                             MainWindowController mwc = mainPaneLoader.getController();
                             mwc.setStageReference(thisStage);

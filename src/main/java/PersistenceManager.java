@@ -124,6 +124,12 @@ public final class PersistenceManager {
             return query.getResultList();
         });
     }
+    public List<CategoryEntity> fetchRootCategories() throws DBErrorException {
+        return readTransaction((Callable<List<CategoryEntity>>) () -> {
+            TypedQuery<CategoryEntity> query = em.createNamedQuery("CategoryEntity.findAll", CategoryEntity.class);
+            return query.getResultList();
+        });
+    }
     public List<TagEntity> fetchAllTags() throws DBErrorException {
         return readTransaction((Callable<List<TagEntity>>) () -> {
             TypedQuery<TagEntity> query = em.createQuery("SELECT t from TagEntity as t", TagEntity.class);

@@ -1,5 +1,4 @@
 import JPAobjects.TaskEntity;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

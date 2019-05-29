@@ -19,7 +19,7 @@ public class TaskEditService extends Service<Boolean> {
             protected Boolean call() {
                 try {
                     this.updateMessage("Editing task in the database...");
-                    PersistenceManager.getInstance().persist(task);
+                    PersistenceManager.getInstance().merge(task);
                     this.updateMessage("Edit successful.");
                     return true;
                 } catch (DBErrorException e) {

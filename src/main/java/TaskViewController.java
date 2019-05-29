@@ -47,8 +47,8 @@ public class TaskViewController extends Controller {
     @FXML
     private Button deleteButton;
 
-    private ObservableList<TaskEntity> tableData  = FXCollections.observableArrayList();
-    private ObservableList<TagEntity> filteredOutTags = FXCollections.observableArrayList();
+    private final ObservableList<TaskEntity> tableData  = FXCollections.observableArrayList();
+    private final ObservableList<TagEntity> filteredOutTags = FXCollections.observableArrayList();
     private TaskRefreshService trsvc;
     private TaskDeleteService tdsvc;
     private TaskEditService tesvc;
@@ -101,28 +101,25 @@ public class TaskViewController extends Controller {
             @Override
             public ObservableValue<Boolean> call(Integer index) {
                 ObservableValue<Boolean> value = doneColumn.getCellObservableValue(index);
-                value.addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> obs, Boolean wasSelected, Boolean isSelected) {
-                        System.out.println("changed from: " + wasSelected + " to " + isSelected);
-                        TaskEntity task = sortedData.get(index);
-                        task.setIs_done(isSelected);
-                        tesvc.setTask(task);
-                        tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
-                                wse -> {
-                                    if (!tesvc.getValue()) {
-                                        //REVERT CHANGES
-                                        task.setIs_done(wasSelected);
-                                    }
-                                    ControllerCommunicator.getInstance().unbindStatusBar();
-                                    ControllerCommunicator.getInstance().enableDBButtons();
-                                    tableView.refresh();
-                                });
-                        ControllerCommunicator.getInstance().bindStatusBar(tesvc);
-                        ControllerCommunicator.getInstance().disableDBButtons();
-                        tesvc.reset();
-                        tesvc.start();
-                    }
+                value.addListener((obs, wasSelected, isSelected) -> {
+                    System.out.println("changed from: " + wasSelected + " to " + isSelected);
+                    TaskEntity task = sortedData.get(index);
+                    task.setIs_done(isSelected);
+                    tesvc.setTask(task);
+                    tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                            wse -> {
+                                if (!tesvc.getValue()) {
+                                    //REVERT CHANGES
+                                    task.setIs_done(wasSelected);
+                                }
+                                ControllerCommunicator.getInstance().unbindStatusBar();
+                                ControllerCommunicator.getInstance().enableDBButtons();
+                                tableView.refresh();
+                            });
+                    ControllerCommunicator.getInstance().bindStatusBar(tesvc);
+                    ControllerCommunicator.getInstance().disableDBButtons();
+                    tesvc.reset();
+                    tesvc.start();
                 });
                 return value;
             }
@@ -185,9 +182,7 @@ public class TaskViewController extends Controller {
     private void createTaskWindow(TaskEntity task) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXML_TaskWindow.fxml"));
-            fxmlLoader.setControllerFactory(clazz -> {
-                return new TaskWindowController(task);
-            });
+            fxmlLoader.setControllerFactory(clazz -> new TaskWindowController(task));
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 600, 700);
             Stage taskStage = new Stage();

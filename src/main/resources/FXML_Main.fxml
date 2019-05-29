@@ -69,31 +69,27 @@
                <MenuItem fx:id="fileQuit" mnemonicParsing="false" onAction="#handleFileQuitMenuAction" text="Close" />
            </Menu>
            <Menu mnemonicParsing="false" text="Help">
-               <MenuItem fx:id="helpAbout" mnemonicParsing="false" onAction="#handleHelpAboutAction" text="About" />
-            <MenuItem fx:id="helpUserManual" mnemonicParsing="false" onAction="#handleHelpUserManualAction" text="User Manual" />
+               <MenuItem mnemonicParsing="false" onAction="#handleHelpAboutAction" text="About" />
+            <MenuItem mnemonicParsing="false" onAction="#handleHelpUserManualAction" text="User Manual" />
            </Menu>
        </MenuBar>
    </top>
    <bottom>
-      <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="200.0" spacing="9.0" styleClass="my-status-bar" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Status:" />
-            <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS" />
-            <Label fx:id="statusLabel" text="Label" />
-            <ProgressIndicator fx:id="progressIndicator" prefHeight="16.0" prefWidth="16.0" />
-            <ImageView fx:id="ok" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
-                 <image>
-                     <Image url="@ok.png" />
-                 </image>
-            </ImageView>
-            <ImageView fx:id="failed" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
-                <image>
-                    <Image url="@error.png" />
-                </image>
-            </ImageView>
-         </children>
-         <padding>
-            <Insets left="8.0" right="8.0" top="1.0" />
-         </padding></HBox>
+       <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="200.0" spacing="9.0" styleClass="my-status-bar"
+             BorderPane.alignment="CENTER">
+           <padding>
+               <Insets left="8.0" right="8.0" top="1.0"/>
+           </padding>
+           <Label text="Status:"/>
+           <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS"/>
+           <Label fx:id="statusLabel" text="Label"/>
+           <ProgressIndicator fx:id="progressIndicator" prefHeight="16.0" prefWidth="16.0"/>
+           <ImageView fx:id="ok" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@ok.png"/>
+           </ImageView>
+           <ImageView fx:id="failed" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@error.png"/>
+           </ImageView>
+       </HBox>
    </bottom>
 </BorderPane>

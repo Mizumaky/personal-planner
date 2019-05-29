@@ -15,7 +15,7 @@ public class ApplicationMain extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Taskira");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         try {

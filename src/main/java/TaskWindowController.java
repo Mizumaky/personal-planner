@@ -29,10 +29,10 @@ public class TaskWindowController extends Controller {
     @FXML
     TreeView<TreeEntityProxy> tagTreeView;
 
-    private TaskEntity task = null;
+    private TaskEntity task;
     CheckBoxTreeItem<TreeEntityProxy> rootItem;
     private ArrayList<CategoryEntity> rootTagCategories;
-    private ArrayList<TagEntity> selectedTags = new ArrayList<>();
+    private final ArrayList<TagEntity> selectedTags = new ArrayList<>();
     private TaskAddService tasvc = null;
     private TaskEditService tesvc = null;
 
@@ -133,14 +133,10 @@ public class TaskWindowController extends Controller {
     }
 
     public boolean titleLengthCheck() {
-        if (titleTextField.getText().isEmpty() || titleTextField.getText().length() >= 256)
-            return false;
-        return true;
+        return !titleTextField.getText().isEmpty() && titleTextField.getText().length() < 256;
     }
     public boolean descriptionLengthCheck() {
-        if (descTextArea.getText().length() >= 1024)
-            return false;
-        return true;
+        return descTextArea.getText().length() < 1024;
     }
 
     public void setRootTagCategories(ArrayList<CategoryEntity> rootTagCategories) {
@@ -165,14 +161,11 @@ public class TaskWindowController extends Controller {
             for (TagEntity tag : category.getTags()) {
                 CheckBoxTreeItem<TreeEntityProxy> tagItem = new CheckBoxTreeItem<>(new TreeEntityProxy(null, tag));
                 categoryItem.getChildren().add(tagItem);
-                tagItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        if (newValue) {
-                            selectedTags.add(tagItem.getValue().getTag());
-                        } else {
-                            selectedTags.remove(tagItem.getValue().getTag());
-                        }
+                tagItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        selectedTags.add(tagItem.getValue().getTag());
+                    } else {
+                        selectedTags.remove(tagItem.getValue().getTag());
                     }
                 });
             }

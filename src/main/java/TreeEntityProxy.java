@@ -1,13 +1,12 @@
 import JPAobjects.CategoryEntity;
 import JPAobjects.TagEntity;
-import javafx.collections.ObservableList;
 
 public class TreeEntityProxy {
     enum Type {
         CATEGORY, TAG
     }
 
-    private Type type = null;
+    private Type type;
     private CategoryEntity category = null;
     private TagEntity tag = null;
 
@@ -24,7 +23,7 @@ public class TreeEntityProxy {
         } else {
             throw new RuntimeException("Invalid creation of tree entity proxy object");
         }
-    };
+    }
 
     public Type getType() {
         return type;

@@ -35,17 +35,18 @@
          <Button fx:id="editButton" layoutX="1870.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleEditButtonAction" text="Edit" />
          <Button fx:id="addTaskButton" layoutX="1931.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleAddTaskButtonAction" text="Add new" />
         </HBox>
-      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="2000.0" prefWidth="2000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-              <TableView fx:id="tableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                  <columns>
-                      <TableColumn fx:id="doneColumn" minWidth="30.0" prefWidth="40.0" text="Done" />
-                      <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="200.0" text="Name" />
-                  <TableColumn fx:id="tagColumn" minWidth="40.0" prefWidth="400.0" text="Tags" />
-                      <TableColumn fx:id="descColumn" minWidth="100.0" prefWidth="400.0" text="Description" />
-                  </columns>
-              </TableView>
-         </children>
-      </AnchorPane>
+        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="2000.0"
+                    prefWidth="2000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TableView fx:id="tableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <columns>
+                    <TableColumn fx:id="doneColumn" minWidth="30.0" prefWidth="40.0" text="Done"/>
+                    <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="200.0" text="Name"/>
+                    <TableColumn fx:id="tagColumn" minWidth="40.0" prefWidth="400.0" text="Tags"/>
+                    <TableColumn fx:id="descColumn" minWidth="100.0" prefWidth="400.0" text="Description"/>
+                </columns>
+            </TableView>
+        </AnchorPane>
     </VBox>
 </AnchorPane>

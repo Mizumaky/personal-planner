@@ -1,4 +1,3 @@
-import javafx.event.ActionEvent;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.junit.Before;
@@ -13,8 +12,6 @@ import java.util.Random;
 @RunWith(JUnit4.class)
 public class TaskWindowControllerTest {
 
-    private TextField textField;
-    private TextArea descTextArea;
     private TaskWindowController twc;
 
     @Rule

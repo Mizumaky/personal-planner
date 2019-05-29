@@ -48,25 +48,26 @@ public final class PersistenceManager {
         }
     }
 
-    public void close() throws DBErrorException {
-        try {
-            if (checkEM()) {
-                em.close();
-                System.err.println("INFO[PersistanceManager]: EntityManager closed.");
-            } else {
-                System.err.println("WARNING[PersistanceManager]: There's no EntityManager to close.");
-            }
-            if (checkEMF()) {
-                emFactory.close();
-                System.err.println("INFO[PersistanceManager]: EntityManagerFactory closed.");
-            } else {
-                System.err.println("WARNING[PersistanceManager]: There's no EntityManagerFactory to close.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new DBErrorException();
-        }
-    }
+//    public void close() throws DBErrorException {
+//        try {
+//            if (checkEM()) {
+//                em.close();
+//                System.err.println("INFO[PersistanceManager]: EntityManager closed.");
+//            } else {
+//                System.err.println("WARNING[PersistanceManager]: There's no EntityManager to close.");
+//            }
+//            if (checkEMF()) {
+//                emFactory.close();
+//                System.err.println("INFO[PersistanceManager]: EntityManagerFactory closed.");
+//            } else {
+//                System.err.println("WARNING[PersistanceManager]: There's no EntityManagerFactory to close.");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new DBErrorException();
+//        }
+//    }
+
 //----------------------------------------------------------------------
 
     private <T> void writeTransaction(Callable callable) throws DBErrorException {
@@ -130,12 +131,12 @@ public final class PersistenceManager {
             return query.getResultList();
         });
     }
-    public List<TagEntity> fetchAllTags() throws DBErrorException {
-        return readTransaction((Callable<List<TagEntity>>) () -> {
-            TypedQuery<TagEntity> query = em.createQuery("SELECT t from TagEntity as t", TagEntity.class);
-            return query.getResultList();
-        });
-    }
+//    public List<TagEntity> fetchAllTags() throws DBErrorException {
+//        return readTransaction((Callable<List<TagEntity>>) () -> {
+//            TypedQuery<TagEntity> query = em.createQuery("SELECT t from TagEntity as t", TagEntity.class);
+//            return query.getResultList();
+//        });
+//    }
 
 
 }

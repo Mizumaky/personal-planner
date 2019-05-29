@@ -1,8 +1,5 @@
 import JPAobjects.CategoryEntity;
 import JPAobjects.TagEntity;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
@@ -24,7 +21,7 @@ public class TagViewController extends Controller {
 //    private Button addTagButton;
 
     private TagRefreshService trsvc = null;
-    private ArrayList<CategoryEntity> rootCategories = new ArrayList<>();
+    private final ArrayList<CategoryEntity> rootCategories = new ArrayList<>();
     private ObservableList<TagEntity> unselectedTags;
 
     @Override
@@ -45,10 +42,10 @@ public class TagViewController extends Controller {
         //tree data not auto updated since its recreated everytime on refresh
     }
 
-    @FXML
-    private void handleRefreshButtonAction() {
-        refreshTags();
-    }
+//    @FXML
+//    private void handleRefreshButtonAction() {
+//        refreshTags();
+//    }
 
 //    @FXML
 //    private void handleAddTagButtonAction() {
@@ -96,14 +93,11 @@ public class TagViewController extends Controller {
             for (TagEntity tag : category.getTags()) {
                 CheckBoxTreeItem<TreeEntityProxy> tagItem = new CheckBoxTreeItem<>(new TreeEntityProxy(null, tag));
                 categoryItem.getChildren().add(tagItem);
-                tagItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        if (newValue) {
-                            unselectedTags.remove(tagItem.getValue().getTag());
-                        } else {
-                            unselectedTags.add(tagItem.getValue().getTag());
-                        }
+                tagItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        unselectedTags.remove(tagItem.getValue().getTag());
+                    } else {
+                        unselectedTags.add(tagItem.getValue().getTag());
                     }
                 });
             }

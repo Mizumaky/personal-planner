@@ -17,7 +17,7 @@ public class TaskEntity {
     @GeneratedValue  (strategy = GenerationType.SEQUENCE, generator = "seq") //do i need this if i have serial at sql creation??
     private int id;
 
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "description")

@@ -1,10 +1,7 @@
 package JPAobjects;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table (name = "task", schema = "public")
@@ -29,7 +26,7 @@ public class TaskEntity {
     @Column(name = "is_done", nullable = false)
     private Boolean is_done;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "task_tag",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false),
@@ -54,7 +51,7 @@ public class TaskEntity {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Boolean isIs_done() { return is_done; }
+    public Boolean getIs_done() { return is_done; }
     public void setIs_done(Boolean is_done) { this.is_done = is_done; }
 
     public Set<TagEntity> getTags() { return tags; }

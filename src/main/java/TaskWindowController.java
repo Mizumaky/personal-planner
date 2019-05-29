@@ -1,10 +1,17 @@
+import JPAobjects.CategoryEntity;
+import JPAobjects.TagEntity;
 import JPAobjects.TaskEntity;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
@@ -19,8 +26,13 @@ public class TaskWindowController extends Controller {
     Button submitButton;
     @FXML
     Label statusLabel;
+    @FXML
+    TreeView<TreeEntityProxy> tagTreeView;
 
     private TaskEntity task = null;
+    CheckBoxTreeItem<TreeEntityProxy> rootItem;
+    private ArrayList<CategoryEntity> rootTagCategories;
+    private ArrayList<TagEntity> selectedTags = new ArrayList<>();
     private TaskAddService tasvc = null;
     private TaskEditService tesvc = null;
 
@@ -31,11 +43,25 @@ public class TaskWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tasvc = new TaskAddService();
-        tesvc = new TaskEditService();
+        //PREPARE FIELDS AND TREE
         titleTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             submitButton.setDisable(newValue.trim().isEmpty());
         });
+        tagTreeView.setShowRoot(false);
+        tagTreeView.setCellFactory(CheckBoxTreeCell.<TreeEntityProxy>forTreeView());
+        rootTagCategories = ControllerCommunicator.getInstance().getRootTagCategories();
+        createTagTree();
+        if (task != null) {
+            titleTextField.setText(task.getTitle());
+            descTextArea.setText(task.getDescription());
+            for (TagEntity tag : task.getTags()) {
+                checkInTree(rootItem, tag);
+            }
+        }
+
+        //ASSIGN HANDLERS
+        tasvc = new TaskAddService();
+        tesvc = new TaskEditService();
         tasvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (tasvc.getValue()) {
@@ -61,10 +87,7 @@ public class TaskWindowController extends Controller {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
                 });
-        if (task != null) {
-            titleTextField.setText(task.getTitle());
-            descTextArea.setText(task.getDescription());
-        }
+
     }
 
 
@@ -94,13 +117,13 @@ public class TaskWindowController extends Controller {
             ControllerCommunicator.getInstance().bindStatusBar(tesvc);
             task.setTitle(titleTextField.getText());
             task.setDescription(descTextArea.getText());
-            //task.setTags(); //TODO
+            task.setTags(new HashSet<>(selectedTags));
             tesvc.reset();
             tesvc.setTask(task);
             tesvc.start();
         } else {
             ControllerCommunicator.getInstance().bindStatusBar(tasvc);
-            task = new TaskEntity(titleTextField.getText(), descTextArea.getText(),false, new HashSet<>());
+            task = new TaskEntity(titleTextField.getText(), descTextArea.getText(),false, new HashSet<>(selectedTags));
             tasvc.reset();
             tasvc.setTask(task);
             tasvc.start();
@@ -120,11 +143,56 @@ public class TaskWindowController extends Controller {
         return true;
     }
 
-//    public void setTask(TaskEntity task) {
-//        this.task = task;
-//    }
-//
-//    public TaskEntity getTask() {
-//        return task;
-//    }
+    public void setRootTagCategories(ArrayList<CategoryEntity> rootTagCategories) {
+        this.rootTagCategories = rootTagCategories;
+    }
+
+    public void createTagTree(){
+        CategoryEntity root = new CategoryEntity("root", null, rootTagCategories, new ArrayList<>());
+        rootItem = growTree(root);
+        rootItem.setExpanded(true);
+        rootItem.setSelected(false);
+        tagTreeView.setRoot(rootItem);
+    }
+
+    private CheckBoxTreeItem<TreeEntityProxy> growTree(CategoryEntity category) {
+        CheckBoxTreeItem<TreeEntityProxy> categoryItem = new CheckBoxTreeItem<>(new TreeEntityProxy(category, null), new ImageView(getClass().getResource("folder.png").toExternalForm()));
+        categoryItem.setExpanded(true);
+        if (category != null) {
+            for (CategoryEntity subcategory : category.getSubcategories()) {
+                categoryItem.getChildren().add(growTree(subcategory));
+            }
+            for (TagEntity tag : category.getTags()) {
+                CheckBoxTreeItem<TreeEntityProxy> tagItem = new CheckBoxTreeItem<>(new TreeEntityProxy(null, tag));
+                categoryItem.getChildren().add(tagItem);
+                tagItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if (newValue) {
+                            selectedTags.add(tagItem.getValue().getTag());
+                        } else {
+                            selectedTags.remove(tagItem.getValue().getTag());
+                        }
+                    }
+                });
+            }
+        } else {
+            System.err.println("Null pointer at category at grow tree");
+        }
+        return categoryItem;
+    }
+
+
+    private void checkInTree(CheckBoxTreeItem<TreeEntityProxy> node , TagEntity tag) {
+        if (node != null) {
+            if (node.getValue().getType() == TreeEntityProxy.Type.TAG && node.getValue().getTag().equals(tag)) {
+                node.setSelected(true);
+                System.out.println(tag + " selected");
+                return;
+            }
+            for (TreeItem<TreeEntityProxy> child : node.getChildren()) {
+                checkInTree((CheckBoxTreeItem<TreeEntityProxy>) child, tag);
+            }
+        }
+    }
 }

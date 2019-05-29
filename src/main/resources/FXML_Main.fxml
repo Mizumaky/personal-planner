@@ -10,12 +10,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="1000" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
     <stylesheets>
@@ -71,14 +66,11 @@
    <top>
        <MenuBar BorderPane.alignment="CENTER">
            <Menu mnemonicParsing="false" text="File">
-               <MenuItem mnemonicParsing="false" text="Test" />
                <MenuItem fx:id="fileQuit" mnemonicParsing="false" onAction="#handleFileQuitMenuAction" text="Close" />
            </Menu>
-           <Menu mnemonicParsing="false" text="Edit">
-               <MenuItem mnemonicParsing="false" text="Preferences" />
-           </Menu>
            <Menu mnemonicParsing="false" text="Help">
-               <MenuItem mnemonicParsing="false" text="About" />
+               <MenuItem fx:id="helpAbout" mnemonicParsing="false" onAction="#handleHelpAboutAction" text="About" />
+            <MenuItem fx:id="helpUserManual" mnemonicParsing="false" onAction="#handleHelpUserManualAction" text="User Manual" />
            </Menu>
        </MenuBar>
    </top>

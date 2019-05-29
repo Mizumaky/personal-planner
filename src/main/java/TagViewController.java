@@ -113,6 +113,9 @@ public class TagViewController extends Controller {
         return categoryItem;
     }
 
+    public ArrayList<CategoryEntity> getRootCategories() {
+        return rootCategories;
+    }
 
     public void setUnselectedTagsList(ObservableList<TagEntity> tagList) {
         unselectedTags = tagList;

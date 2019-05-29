@@ -1,12 +1,16 @@
+import JPAobjects.CategoryEntity;
 import JPAobjects.TaskEntity;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.scene.control.TableView;
 
+import java.util.ArrayList;
+
 public class ControllerCommunicator {
     private static ControllerCommunicator instance = null;
     private static MainWindowController mainWindowController = null;
     private static TaskViewController taskViewController = null;
+//    private static TaskWindowController taskWindowController = null;
     private static TagViewController tagViewController = null;
 
     //disable constructor
@@ -25,6 +29,9 @@ public class ControllerCommunicator {
     public void registerTaskViewController(TaskViewController ctrlr) {
         taskViewController = ctrlr;
     }
+//    public void registerTaskWindowController(TaskWindowController ctrlr) {
+//        taskWindowController = ctrlr;
+//    }
     public void registerTagViewController(TagViewController ctrlr) {
         tagViewController = ctrlr;
     }
@@ -32,8 +39,13 @@ public class ControllerCommunicator {
     public void refreshTaskView() {
         taskViewController.refreshTasks();
     }
+
     public void refreshTagView() {
         tagViewController.refreshTags();
+    }
+
+    public ArrayList<CategoryEntity> getRootTagCategories() {
+        return tagViewController.getRootCategories();
     }
 
     public TableView<TaskEntity> getTaskViewTable() {
@@ -76,8 +88,6 @@ public class ControllerCommunicator {
     public void bindStatusBar(Service svc) {
         if (mainWindowController != null) {
             mainWindowController.getStatusLabel().textProperty().bind(svc.messageProperty());
-//            mainWindowController.getProgressIndicator().setVisible(true);
-//            mainWindowController.getProgressIndicator().setManaged(true);
             mainWindowController.getProgressIndicator().managedProperty().bind(svc.valueProperty().isNull());
             mainWindowController.getProgressIndicator().visibleProperty().bind(svc.valueProperty().isNull());
             mainWindowController.getOk().managedProperty().bind(svc.valueProperty().isEqualTo(true));

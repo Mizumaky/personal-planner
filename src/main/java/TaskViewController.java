@@ -62,9 +62,9 @@ public class TaskViewController extends Controller {
         tesvc = new TaskEditService();
 
         //PREPARE AND CONNECT DATA TO SOURCE
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        // Wrap the ObservableList in a FilteredList (initially display all data).
         FilteredList<TaskEntity> filteredData = new FilteredList<>(tableData, p -> true);
-        // 2. Set the filter Predicate whenever the filter changes.
+        // Set the filter Predicate whenever the filter changes.
         filteredOutTags.addListener(new ListChangeListener<TagEntity>() {
             @Override
             public void onChanged(Change<? extends TagEntity> c) {
@@ -78,15 +78,24 @@ public class TaskViewController extends Controller {
                 });
             }
         });
-        // 3. Wrap the FilteredList in a SortedList.
+        // Wrap the FilteredList in a SortedList.
         SortedList<TaskEntity> sortedData = new SortedList<>(filteredData);
-        // 4. Bind the SortedList comparator to the TableView comparator.
+//        //TODO - when i change a task, the sorted list isnt notified about that, so it doesnt resort, and is kinda buggy
+////        sortedData.setComparator((o1, o2) -> {
+////            if (o1.getIs_done() && o2.getIs_done() || !o1.getIs_done() && !o2.getIs_done() )
+////                return o1.getTitle().compareTo(o2.getTitle());
+////            else if (o1.getIs_done()) //not done tasks first - return negative so that this one gets behind
+////                return -1;
+////            else
+////                return 1;
+////        });
+        // Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
         //SET UP TABLE
         doneColumn.setCellValueFactory(param -> {
             TaskEntity task = param.getValue();
-            return new SimpleBooleanProperty(task.isIs_done());
+            return new SimpleBooleanProperty(task.getIs_done());
         });
         doneColumn.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
             @Override
@@ -113,7 +122,6 @@ public class TaskViewController extends Controller {
                         ControllerCommunicator.getInstance().disableDBButtons();
                         tesvc.reset();
                         tesvc.start();
-                        System.out.println("edit started");
                     }
                 });
                 return value;
@@ -140,12 +148,14 @@ public class TaskViewController extends Controller {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
                     ControllerCommunicator.getInstance().refreshTagView();
+                    tableView.refresh();
                 });
         tdsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
                     tableData.remove(tdsvc.getTask());
+                    tableView.refresh();
                 });
     }
 
@@ -179,7 +189,7 @@ public class TaskViewController extends Controller {
                 return new TaskWindowController(task);
             });
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 600, 400);
+            Scene scene = new Scene(parent, 600, 700);
             Stage taskStage = new Stage();
             taskStage.initModality(Modality.APPLICATION_MODAL);
             taskStage.setScene(scene);

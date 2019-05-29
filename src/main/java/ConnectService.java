@@ -17,13 +17,13 @@ public class ConnectService extends Service<Boolean> {
                     this.updateMessage("Connecting to the database...");
                     pm.connect();
 
-                    this.updateMessage("Connection test 1: Getting and printing tags...");
-                    List<TagEntity> tags = pm.fetchAllTags();
-                    System.out.println(tags);
-
-                    this.updateMessage("Connection test 2: Getting and printing tasks...");
-                    List<TaskEntity> tasks = pm.fetchAllTasks();
-                    System.out.println(tasks);
+//                    this.updateMessage("TEST 1:  Getting and printing tags...");
+//                    List<TagEntity> tags = pm.fetchAllTags();
+//                    System.out.println(tags);
+//
+//                    this.updateMessage("TEST 2:  Getting and printing tasks...");
+//                    List<TaskEntity> tasks = pm.fetchAllTasks();
+//                    System.out.println(tasks);
 
                     this.updateMessage("Succesfully connected.");
                     return true;

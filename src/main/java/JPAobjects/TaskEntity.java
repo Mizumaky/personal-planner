@@ -27,7 +27,7 @@ public class TaskEntity {
     private String description;
 
     @Column(name = "is_done", nullable = false)
-    private boolean is_done;
+    private Boolean is_done;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(
@@ -54,8 +54,8 @@ public class TaskEntity {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public boolean isIs_done() { return is_done; }
-    public void setIs_done(boolean is_done) { this.is_done = is_done; }
+    public Boolean isIs_done() { return is_done; }
+    public void setIs_done(Boolean is_done) { this.is_done = is_done; }
 
     public Set<TagEntity> getTags() { return tags; }
     public void setTags(Set<TagEntity> tags) { this.tags = tags; }

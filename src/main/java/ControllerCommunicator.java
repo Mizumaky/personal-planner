@@ -1,4 +1,5 @@
 import JPAobjects.TaskEntity;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.scene.control.TableView;
 
@@ -28,15 +29,23 @@ public class ControllerCommunicator {
         tagViewController = ctrlr;
     }
 
-    public void secondaryInitTaskView() {
-        taskViewController.secondaryInit();
+    public void refreshTaskView() {
+        taskViewController.refreshTasks();
     }
-    public void secondaryInitTagView() {
-        tagViewController.secondaryInit();
+    public void refreshTagView() {
+        tagViewController.refreshTags();
     }
 
-    public TableView<TaskEntity> getTaskViewData() {
+    public TableView<TaskEntity> getTaskViewTable() {
         return taskViewController.getTable();
+    }
+
+    public ObservableList<TaskEntity> getTaskViewData() {
+        return taskViewController.getTableData();
+    }
+
+    public void bindUnselectedTagsList() {
+        tagViewController.setUnselectedTagsList(taskViewController.getUnselectedTagsList());
     }
 
     public void disableDBButtons() {
@@ -64,12 +73,13 @@ public class ControllerCommunicator {
             System.err.println("Could not enable buttons, tag view controller not registered.");
         }
     }
-
     public void bindStatusBar(Service svc) {
         if (mainWindowController != null) {
-            mainWindowController.getStatusLabel().textProperty().bind(svc.messageProperty()); //TODO null pointer
-            mainWindowController.getProgressIndicator().managedProperty().bind(svc.runningProperty());
-            mainWindowController.getProgressIndicator().visibleProperty().bind(svc.runningProperty());
+            mainWindowController.getStatusLabel().textProperty().bind(svc.messageProperty());
+//            mainWindowController.getProgressIndicator().setVisible(true);
+//            mainWindowController.getProgressIndicator().setManaged(true);
+            mainWindowController.getProgressIndicator().managedProperty().bind(svc.valueProperty().isNull());
+            mainWindowController.getProgressIndicator().visibleProperty().bind(svc.valueProperty().isNull());
             mainWindowController.getOk().managedProperty().bind(svc.valueProperty().isEqualTo(true));
             mainWindowController.getOk().visibleProperty().bind(svc.valueProperty().isEqualTo(true));
             mainWindowController.getFailed().managedProperty().bind(svc.valueProperty().isEqualTo(false));
@@ -78,6 +88,7 @@ public class ControllerCommunicator {
             System.err.println("Could not bind status bar, main controller not registered.");
         }
     }
+
     public void unbindStatusBar() {
         if (mainWindowController != null) {
             mainWindowController.getStatusLabel().textProperty().unbind();

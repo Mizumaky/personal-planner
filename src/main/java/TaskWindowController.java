@@ -2,10 +2,7 @@ import JPAobjects.TaskEntity;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -42,7 +39,7 @@ public class TaskWindowController extends Controller {
         tasvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (tasvc.getValue()) {
-                        ControllerCommunicator.getInstance().getTaskViewData().getItems().add(tasvc.getTask());
+                        ControllerCommunicator.getInstance().getTaskViewData().add(tasvc.getTask());
                     } else {
                         thisStage.show();
                         task = null;
@@ -55,7 +52,7 @@ public class TaskWindowController extends Controller {
         tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (tesvc.getValue()) {
-                        ControllerCommunicator.getInstance().getTaskViewData().refresh();
+                        ControllerCommunicator.getInstance().getTaskViewTable().refresh();
                     } else {
                         thisStage.show();
                         submitButton.setText("Try again");
@@ -72,11 +69,25 @@ public class TaskWindowController extends Controller {
 
 
     @FXML
-    private void handleCancelButtonAction(ActionEvent event) {
+    public void handleCancelButtonAction(ActionEvent event) {
         thisStage.close();
     }
+
     @FXML
-    private void handleSubmitButtonAction(ActionEvent event) {
+    public void handleSubmitButtonAction(ActionEvent event) {
+        if (!titleLengthCheck() || !descriptionLengthCheck()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Input error");
+            alert.setHeaderText(null);
+            if (!titleLengthCheck())
+                alert.setContentText("Title must be 1 to 255 characters!");
+            else
+                alert.setContentText("Description must be shorter than 1024 characters!");
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("CSS_my_style_1.css").toExternalForm());
+            alert.showAndWait();
+            return;
+        }
+
         submitButton.setDisable(true);
         ControllerCommunicator.getInstance().disableDBButtons();
         if (task != null) {
@@ -96,6 +107,17 @@ public class TaskWindowController extends Controller {
         }
 
         thisStage.close();
+    }
+
+    public boolean titleLengthCheck() {
+        if (titleTextField.getText().isEmpty() || titleTextField.getText().length() >= 256)
+            return false;
+        return true;
+    }
+    public boolean descriptionLengthCheck() {
+        if (descTextArea.getText().length() >= 1024)
+            return false;
+        return true;
     }
 
 //    public void setTask(TaskEntity task) {

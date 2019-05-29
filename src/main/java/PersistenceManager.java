@@ -78,10 +78,10 @@ public final class PersistenceManager {
         } catch (Exception e){
             e.printStackTrace();
             throw new DBErrorException();
-        }  finally {
-            if (em.getTransaction().isActive())
-                em.getTransaction().rollback();
-        }
+        } //finally {
+//            if (em.getTransaction().isActive())
+//                em.getTransaction().rollback();
+//        }
     }
     private <T> T readTransaction(Callable<T> callable) throws DBErrorException {
         try {
@@ -93,10 +93,10 @@ public final class PersistenceManager {
         } catch (Exception e){
             e.printStackTrace();
             throw new DBErrorException();
-        } finally {
-            if (em.getTransaction().isActive())
-                em.getTransaction().rollback();
-        }
+        } //finally {
+//            if (em.getTransaction().isActive())
+//                em.getTransaction().rollback();
+//        }
     }
 
     public <T> void persist(T entity) throws DBErrorException {

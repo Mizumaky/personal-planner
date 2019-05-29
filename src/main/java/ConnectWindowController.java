@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +29,7 @@ public class ConnectWindowController extends Controller {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
+        //INIT CONNECT SERVICE
         csvc = new ConnectService();
         statusLabel.setText("Initializing...");
         statusLabel.textProperty().unbind();
@@ -34,6 +37,7 @@ public class ConnectWindowController extends Controller {
         progressIndicator.managedProperty().bind(csvc.runningProperty());
         progressIndicator.visibleProperty().bind(csvc.runningProperty());
 
+        //ASSIGN EVENT HANDLERS
         csvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     boolean result = csvc.getValue();
@@ -43,15 +47,19 @@ public class ConnectWindowController extends Controller {
                         try {
                             FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
                             Parent root = mainPaneLoader.load(); //also instantiates the associated controller
-                            Scene mainScene = new Scene(root, 1200, 800);
-                            thisStage.setScene(mainScene);
+                            Scene mainScene = new Scene(root, 1260, 820);
+                            Stage mainStage = new Stage();
+                            mainStage.setTitle("Taskira");
+                            mainStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
+                            mainStage.setScene(mainScene);
                             MainWindowController mwc = mainPaneLoader.getController();
-                            mwc.setStageReference(thisStage);
+                            mwc.setStageReference(mainStage);
+                            thisStage.close();
+                            mainStage.show();
                         } catch (IOException e) {
                             e.printStackTrace();
                             exit(1);
                         }
-
                     } else {
                         tryAgainButton.setVisible(true);
                     }

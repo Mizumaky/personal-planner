@@ -28,6 +28,7 @@
        <fx:include source="FXML_TaskView.fxml" BorderPane.alignment="CENTER" />
    </center>
    <left>
+       <!--
        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="180.0" prefWidth="300.0" BorderPane.alignment="CENTER">
            <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="my-top-menu">
                <padding>
@@ -65,6 +66,7 @@
             </VBox.margin>
          </GridPane>
        </VBox>
+       -->
    </left>
    <top>
        <MenuBar BorderPane.alignment="CENTER">
@@ -81,12 +83,12 @@
        </MenuBar>
    </top>
    <bottom>
-      <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="9.0" styleClass="my-status-bar" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="200.0" spacing="9.0" styleClass="my-status-bar" BorderPane.alignment="CENTER">
          <children>
             <Label text="Status:" />
             <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS" />
             <Label fx:id="statusLabel" text="Label" />
-            <ProgressIndicator fx:id="progressIndicator" prefHeight="17.0" prefWidth="17.0" progress="0.0" />
+            <ProgressIndicator fx:id="progressIndicator" prefHeight="16.0" prefWidth="16.0" />
             <ImageView fx:id="ok" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                  <image>
                      <Image url="@ok.png" />
@@ -99,7 +101,7 @@
             </ImageView>
          </children>
          <padding>
-            <Insets left="8.0" right="8.0" />
+            <Insets left="8.0" right="8.0" top="1.0" />
          </padding></HBox>
    </bottom>
 </BorderPane>

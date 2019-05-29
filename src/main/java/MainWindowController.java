@@ -30,8 +30,8 @@ public class MainWindowController extends Controller {
         failed.setManaged(false);
         progressIndicator.setVisible(false);
         progressIndicator.setManaged(false);
-        ControllerCommunicator.getInstance().secondaryInitTaskView();
-        ControllerCommunicator.getInstance().secondaryInitTagView();
+        ControllerCommunicator.getInstance().bindUnselectedTagsList();
+        ControllerCommunicator.getInstance().refreshTaskView();
     }
 
     @FXML

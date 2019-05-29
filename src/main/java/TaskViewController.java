@@ -1,18 +1,25 @@
+import JPAobjects.TagEntity;
 import JPAobjects.TaskEntity;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,13 +31,13 @@ public class TaskViewController extends Controller {
     @FXML
     private TableView<TaskEntity> tableView;
     @FXML
-    private TableColumn<TaskEntity, Integer> idColumn;
-    @FXML
     private TableColumn<TaskEntity, String> nameColumn;
     @FXML
-    private TableColumn<TaskEntity, String> doneColumn;
+    private TableColumn<TaskEntity, Boolean> doneColumn;
     @FXML
     private TableColumn<TaskEntity, String> tagColumn;
+    @FXML
+    private TableColumn<TaskEntity, String> descColumn;
     @FXML
     private Button refreshButton;
     @FXML
@@ -40,33 +47,99 @@ public class TaskViewController extends Controller {
     @FXML
     private Button deleteButton;
 
-    private ObservableList<TaskEntity> tableData;
-    private Stage taskStage = null;
+    private ObservableList<TaskEntity> tableData  = FXCollections.observableArrayList();
+    private ObservableList<TagEntity> filteredOutTags = FXCollections.observableArrayList();
     private TaskRefreshService trsvc;
     private TaskDeleteService tdsvc;
+    private TaskEditService tesvc;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ControllerCommunicator.getInstance().registerTaskViewController(this);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        doneColumn.setCellValueFactory(new PropertyValueFactory<>("is_done"));
-        tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
-
         //CREATE SERVICES
         trsvc = new TaskRefreshService();
         tdsvc = new TaskDeleteService();
-        //ASSIGN ON SUCCEED METHODS
+        tesvc = new TaskEditService();
+
+        //PREPARE AND CONNECT DATA TO SOURCE
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        FilteredList<TaskEntity> filteredData = new FilteredList<>(tableData, p -> true);
+        // 2. Set the filter Predicate whenever the filter changes.
+        filteredOutTags.addListener(new ListChangeListener<TagEntity>() {
+            @Override
+            public void onChanged(Change<? extends TagEntity> c) {
+                filteredData.setPredicate(taskEntity -> {
+                    // If filter is empty or tag not found in task then show it
+                    for (TagEntity tag : filteredOutTags) {
+                        if (taskEntity.getTags().contains(tag))
+                            return false; //Contains not wanted tag
+                    }
+                    return true;
+                });
+            }
+        });
+        // 3. Wrap the FilteredList in a SortedList.
+        SortedList<TaskEntity> sortedData = new SortedList<>(filteredData);
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        //SET UP TABLE
+        doneColumn.setCellValueFactory(param -> {
+            TaskEntity task = param.getValue();
+            return new SimpleBooleanProperty(task.isIs_done());
+        });
+        doneColumn.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
+            @Override
+            public ObservableValue<Boolean> call(Integer index) {
+                ObservableValue<Boolean> value = doneColumn.getCellObservableValue(index);
+                value.addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> obs, Boolean wasSelected, Boolean isSelected) {
+                        System.out.println("changed from: " + wasSelected + " to " + isSelected);
+                        TaskEntity task = sortedData.get(index);
+                        task.setIs_done(isSelected);
+                        tesvc.setTask(task);
+                        tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                                wse -> {
+                                    if (!tesvc.getValue()) {
+                                        //REVERT CHANGES
+                                        task.setIs_done(wasSelected);
+                                    }
+                                    ControllerCommunicator.getInstance().unbindStatusBar();
+                                    ControllerCommunicator.getInstance().enableDBButtons();
+                                    tableView.refresh();
+                                });
+                        ControllerCommunicator.getInstance().bindStatusBar(tesvc);
+                        ControllerCommunicator.getInstance().disableDBButtons();
+                        tesvc.reset();
+                        tesvc.start();
+                        System.out.println("edit started");
+                    }
+                });
+                return value;
+            }
+        }));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
+        descColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        tableView.setEditable(true);
+
+        // ADD DATA TO TABLE
+        tableView.setItems(sortedData);
+
+        //ASSIGN SERVICE COMPLETION HANDLERS
+        trsvc.setResultList(tableData);
         trsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (trsvc.getValue()) {
                         tableView.setPlaceholder(new Label("No tasks :]"));
                     }
                     else {
-                        tableView.setPlaceholder(new Label("Loading failed."));
+                        tableView.setPlaceholder(new Label("Loading failed!"));
                     }
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
+                    ControllerCommunicator.getInstance().refreshTagView();
                 });
         tdsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
@@ -74,14 +147,6 @@ public class TaskViewController extends Controller {
                     ControllerCommunicator.getInstance().enableDBButtons();
                     tableData.remove(tdsvc.getTask());
                 });
-
-        //ASSIGN REFRESH SERVICE RESULT
-        tableData = trsvc.getResult();
-        tableView.setItems(tableData); //TODO NEED TO SET ONLY ONCE?
-    }
-
-    public void secondaryInit() {
-        refreshTasks();
     }
 
     @FXML
@@ -115,7 +180,7 @@ public class TaskViewController extends Controller {
             });
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 600, 400);
-            taskStage = new Stage();
+            Stage taskStage = new Stage();
             taskStage.initModality(Modality.APPLICATION_MODAL);
             taskStage.setScene(scene);
             taskStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
@@ -126,14 +191,6 @@ public class TaskViewController extends Controller {
             e.printStackTrace();
             exit(1);
         }
-    }
-
-    private void refreshTasks() {
-        tableView.setPlaceholder(new Label("Loading..."));
-        ControllerCommunicator.getInstance().bindStatusBar(trsvc);
-        ControllerCommunicator.getInstance().disableDBButtons();
-        trsvc.reset();
-        trsvc.start();
     }
 
     private void deleteTasks() {
@@ -148,8 +205,19 @@ public class TaskViewController extends Controller {
         }
     }
 
+    public void refreshTasks() {
+        tableView.setPlaceholder(new Label("Loading..."));
+        ControllerCommunicator.getInstance().bindStatusBar(trsvc);
+        ControllerCommunicator.getInstance().disableDBButtons();
+        trsvc.reset();
+        trsvc.start();
+    }
+
     public TableView<TaskEntity> getTable() {
         return tableView;
+    }
+    public ObservableList<TaskEntity> getTableData() {
+        return tableData;
     }
 
     public void disableButtons() {
@@ -159,6 +227,7 @@ public class TaskViewController extends Controller {
         editButton.setDisable(true);
         deleteButton.disableProperty().unbind();
         deleteButton.setDisable(true);
+        tableView.setEditable(false);
     }
 
     public void enableButtons() {
@@ -166,5 +235,10 @@ public class TaskViewController extends Controller {
         addTaskButton.setDisable(false);
         editButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
         deleteButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
+        tableView.setEditable(true);
+    }
+
+    public ObservableList<TagEntity> getUnselectedTagsList() {
+        return filteredOutTags;
     }
 }

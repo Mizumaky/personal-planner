@@ -1,13 +1,15 @@
 import JPAobjects.CategoryEntity;
 import JPAobjects.TagEntity;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.image.ImageView;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,13 +18,14 @@ import java.util.ResourceBundle;
 public class TagViewController extends Controller {
     @FXML
     private TreeView<TreeEntityProxy> treeView;
-    @FXML
-    private Button refreshButton;
+//    @FXML
+//    private Button refreshButton;
 //    @FXML
 //    private Button addTagButton;
 
     private TagRefreshService trsvc = null;
-    private ArrayList<CategoryEntity> rootCategories = null;
+    private ArrayList<CategoryEntity> rootCategories = new ArrayList<>();
+    private ObservableList<TagEntity> unselectedTags;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -32,18 +35,14 @@ public class TagViewController extends Controller {
         treeView.setCellFactory(CheckBoxTreeCell.<TreeEntityProxy>forTreeView());
         //init services
         trsvc = new TagRefreshService();
+        trsvc.setResultList(rootCategories);
         trsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     ControllerCommunicator.getInstance().unbindStatusBar();
                     ControllerCommunicator.getInstance().enableDBButtons();
-                    rootCategories = trsvc.getResult();
                     createTree();
                 });
         //tree data not auto updated since its recreated everytime on refresh
-    }
-
-    public void secondaryInit() {
-        //refreshTags();
     }
 
     @FXML
@@ -53,10 +52,10 @@ public class TagViewController extends Controller {
 
 //    @FXML
 //    private void handleAddTagButtonAction() {
-//        //TODO
+//
 //    }
 
-    private void refreshTags() {
+    public void refreshTags() {
         ControllerCommunicator.getInstance().bindStatusBar(trsvc);
         ControllerCommunicator.getInstance().disableDBButtons();
         trsvc.reset();
@@ -64,7 +63,7 @@ public class TagViewController extends Controller {
     }
 
     public void disableButtons() {
-        refreshButton.setDisable(true);
+//        refreshButton.setDisable(true);
 //        addTaskButton.setDisable(true);
 //        editButton.disableProperty().unbind();
 //        editButton.setDisable(true);
@@ -73,7 +72,7 @@ public class TagViewController extends Controller {
     }
 
     public void enableButtons() {
-        refreshButton.setDisable(false);
+//        refreshButton.setDisable(false);
 //        addTaskButton.setDisable(false);
 //        editButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
 //        deleteButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
@@ -83,11 +82,12 @@ public class TagViewController extends Controller {
         CategoryEntity root = new CategoryEntity("root", null, rootCategories, new ArrayList<>());
         CheckBoxTreeItem<TreeEntityProxy> rootItem = growTree(root);
         rootItem.setExpanded(true);
+        rootItem.setSelected(true);
         treeView.setRoot(rootItem);
     }
 
     private CheckBoxTreeItem<TreeEntityProxy> growTree(CategoryEntity category) {
-        CheckBoxTreeItem<TreeEntityProxy> categoryItem = new CheckBoxTreeItem<>(new TreeEntityProxy(category, null));
+        CheckBoxTreeItem<TreeEntityProxy> categoryItem = new CheckBoxTreeItem<>(new TreeEntityProxy(category, null), new ImageView(getClass().getResource("folder.png").toExternalForm()));
         categoryItem.setExpanded(true);
         if (category != null) {
             for (CategoryEntity subcategory : category.getSubcategories()) {
@@ -96,6 +96,16 @@ public class TagViewController extends Controller {
             for (TagEntity tag : category.getTags()) {
                 CheckBoxTreeItem<TreeEntityProxy> tagItem = new CheckBoxTreeItem<>(new TreeEntityProxy(null, tag));
                 categoryItem.getChildren().add(tagItem);
+                tagItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if (newValue) {
+                            unselectedTags.remove(tagItem.getValue().getTag());
+                        } else {
+                            unselectedTags.add(tagItem.getValue().getTag());
+                        }
+                    }
+                });
             }
         } else {
             System.err.println("Null pointer at category at grow tree");
@@ -103,5 +113,9 @@ public class TagViewController extends Controller {
         return categoryItem;
     }
 
+
+    public void setUnselectedTagsList(ObservableList<TagEntity> tagList) {
+        unselectedTags = tagList;
+    }
 
 }

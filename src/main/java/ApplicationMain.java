@@ -19,7 +19,7 @@ public class ApplicationMain extends Application {
         primaryStage.setTitle("Taskira");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         try {
-            FXMLLoader connectionPaneLoader = new FXMLLoader(getClass().getResource("FXML_ConnectionWindow.fxml"));
+            FXMLLoader connectionPaneLoader = new FXMLLoader(getClass().getResource("FXML_ConnectWindow.fxml"));
             Parent root = connectionPaneLoader.load(); //loads the scene graph and instantiates the associated controller
             Scene connectionScene = new Scene(root, 300, 70);
             ConnectWindowController cwc = connectionPaneLoader.getController();

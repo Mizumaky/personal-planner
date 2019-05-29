@@ -39,10 +39,10 @@
          <children>
               <TableView fx:id="tableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <columns>
-                      <TableColumn fx:id="idColumn" minWidth="30.0" prefWidth="40.0" text="Id" />
-                      <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="200.0" text="Name" />
                       <TableColumn fx:id="doneColumn" minWidth="30.0" prefWidth="40.0" text="Done" />
-                  <TableColumn fx:id="tagColumn" minWidth="40.0" prefWidth="420.0" text="Tags" />
+                      <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="200.0" text="Name" />
+                  <TableColumn fx:id="tagColumn" minWidth="40.0" prefWidth="400.0" text="Tags" />
+                      <TableColumn fx:id="descColumn" minWidth="100.0" prefWidth="400.0" text="Description" />
                   </columns>
               </TableView>
          </children>

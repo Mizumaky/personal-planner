@@ -3,6 +3,9 @@ package JPAobjects;
 import javax.persistence.*;
 import java.util.*;
 
+/**
+ * JPA Entity holding task data
+ */
 @Entity
 @Table (name = "task", schema = "public")
 @NamedQueries({

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 /**
- * JPA Entity holding all
+ * JPA Entity holding tag category data
  */
 @Entity
 @Table(name = "category", schema = "public")

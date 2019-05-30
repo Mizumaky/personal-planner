@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * JPA Entity holding tag data
+ */
 @Entity
 @Table(name = "tag", schema = "public")
 public class TagEntity {

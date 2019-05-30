@@ -1,6 +1,10 @@
 import JPAobjects.CategoryEntity;
 import JPAobjects.TagEntity;
 
+
+/**
+ * A wrapper / proxy class for a tag tree view, storing either a tag or a category.
+ */
 public class TreeEntityProxy {
     enum Type {
         CATEGORY, TAG

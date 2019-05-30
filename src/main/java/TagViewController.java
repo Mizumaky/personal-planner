@@ -11,8 +11,11 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class TagViewController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(TagViewController.class.getName());
+
     @FXML
     private TreeView<TreeEntityProxy> treeView;
 //    @FXML
@@ -76,6 +79,7 @@ public class TagViewController extends Controller {
     }
 
     private void createTree(){
+        LOGGER.info("Creating a tag selector tree");
         CategoryEntity root = new CategoryEntity("root", null, rootCategories, new ArrayList<>());
         CheckBoxTreeItem<TreeEntityProxy> rootItem = growTree(root);
         rootItem.setExpanded(true);

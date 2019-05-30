@@ -14,8 +14,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class TaskWindowController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(TaskWindowController.class.getName());
+
     @FXML
     TextField titleTextField;
     @FXML
@@ -43,6 +46,7 @@ public class TaskWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.info("Initializing task window controller");
         //PREPARE FIELDS AND TREE
         titleTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             submitButton.setDisable(newValue.trim().isEmpty());
@@ -87,7 +91,7 @@ public class TaskWindowController extends Controller {
                     ControllerCommunicator.unbindStatusBar();
                     ControllerCommunicator.enableDBButtons();
                 });
-
+        LOGGER.info("Task window controller initialized");
     }
 
 
@@ -99,6 +103,7 @@ public class TaskWindowController extends Controller {
     @FXML
     public void handleSubmitButtonAction(ActionEvent event) {
         if (!titleLengthCheck() || !descriptionLengthCheck()) {
+            LOGGER.info("Input length not correct");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Input error");
             alert.setHeaderText(null);
@@ -120,12 +125,14 @@ public class TaskWindowController extends Controller {
             task.setTags(new HashSet<>(selectedTags));
             tesvc.reset();
             tesvc.setTask(task);
+            LOGGER.info("Starting a task edit service");
             tesvc.start();
         } else {
             ControllerCommunicator.bindStatusBar(tasvc);
             task = new TaskEntity(titleTextField.getText(), descTextArea.getText(),false, new HashSet<>(selectedTags));
             tasvc.reset();
             tasvc.setTask(task);
+            LOGGER.info("Starting a task add service");
             tasvc.start();
         }
 
@@ -144,6 +151,7 @@ public class TaskWindowController extends Controller {
     }
 
     public void createTagTree(){
+        LOGGER.info("Creating a tag selector tree");
         CategoryEntity root = new CategoryEntity("root", null, rootTagCategories, new ArrayList<>());
         rootItem = growTree(root);
         rootItem.setExpanded(true);

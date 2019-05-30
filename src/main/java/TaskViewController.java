@@ -24,10 +24,16 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.System.exit;
 
+/**
+ * The type Task view controller.
+ */
 public class TaskViewController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(TaskViewController.class.getName());
     @FXML
     private TableView<TaskEntity> tableView;
     @FXML
@@ -55,6 +61,7 @@ public class TaskViewController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.info("Initializing task view controller");
         ControllerCommunicator.registerTaskViewController(this);
         //CREATE SERVICES
         trsvc = new TaskRefreshService();
@@ -102,12 +109,13 @@ public class TaskViewController extends Controller {
             public ObservableValue<Boolean> call(Integer index) {
                 ObservableValue<Boolean> value = doneColumn.getCellObservableValue(index);
                 value.addListener((obs, wasSelected, isSelected) -> {
-                    System.out.println("changed from: " + wasSelected + " to " + isSelected);
+                    LOGGER.info("Checkbox tick event handler started");
                     TaskEntity task = sortedData.get(index);
                     task.setIs_done(isSelected);
                     tesvc.setTask(task);
                     tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                             wse -> {
+                                LOGGER.info("Task edit service on-succeed handler started");
                                 if (!tesvc.getValue()) {
                                     //REVERT CHANGES
                                     task.setIs_done(wasSelected);
@@ -119,6 +127,7 @@ public class TaskViewController extends Controller {
                     ControllerCommunicator.bindStatusBar(tesvc);
                     ControllerCommunicator.disableDBButtons();
                     tesvc.reset();
+                    LOGGER.info("Starting task edit service");
                     tesvc.start();
                 });
                 return value;
@@ -154,6 +163,7 @@ public class TaskViewController extends Controller {
                     tableData.remove(tdsvc.getTask());
                     tableView.refresh();
                 });
+        LOGGER.info("Task view controller initialized");
     }
 
     @FXML
@@ -181,6 +191,7 @@ public class TaskViewController extends Controller {
 
     private void createTaskWindow(TaskEntity task) {
         try {
+            LOGGER.info("Loading task window");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXML_TaskWindow.fxml"));
             fxmlLoader.setControllerFactory(clazz -> new TaskWindowController(task));
             Parent parent = fxmlLoader.load();
@@ -193,7 +204,7 @@ public class TaskViewController extends Controller {
             twc.setStageReference(taskStage);
             taskStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load FXML", e);
             exit(1);
         }
     }
@@ -206,25 +217,44 @@ public class TaskViewController extends Controller {
             ControllerCommunicator.bindStatusBar(tdsvc);
             ControllerCommunicator.disableDBButtons();
             tdsvc.reset();
+            LOGGER.info("Starting task delete service");
             tdsvc.start();
         }
     }
 
+    /**
+     * Refresh tasks.
+     */
     public void refreshTasks() {
         tableView.setPlaceholder(new Label("Loading..."));
         ControllerCommunicator.bindStatusBar(trsvc);
         ControllerCommunicator.disableDBButtons();
         trsvc.reset();
+        LOGGER.info("Starting task refresh service");
         trsvc.start();
     }
 
+    /**
+     * Gets the task table view.
+     *
+     * @return the table
+     */
     public TableView<TaskEntity> getTable() {
         return tableView;
     }
+
+    /**
+     * Gets task table data list.
+     *
+     * @return the table data
+     */
     public ObservableList<TaskEntity> getTableData() {
         return tableData;
     }
 
+    /**
+     * Disable database acess buttons.
+     */
     public void disableButtons() {
         refreshButton.setDisable(true);
         addTaskButton.setDisable(true);
@@ -235,6 +265,9 @@ public class TaskViewController extends Controller {
         tableView.setEditable(false);
     }
 
+    /**
+     * Enable database acess  buttons.
+     */
     public void enableButtons() {
         refreshButton.setDisable(false);
         addTaskButton.setDisable(false);
@@ -243,6 +276,11 @@ public class TaskViewController extends Controller {
         tableView.setEditable(true);
     }
 
+    /**
+     * Gets unselected tags list.
+     *
+     * @return the unselected tags list
+     */
     public ObservableList<TagEntity> getUnselectedTagsList() {
         return filteredOutTags;
     }

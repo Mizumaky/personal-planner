@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Single class holding references to interconnected controllers, providing static methods for bindings between them.
+ * A single class with static fields and methods, holding references to interconnected controllers, providing methods for bindings and interaction between them.
  */
 public class ControllerCommunicator {
     private static final Logger LOGGER = Logger.getLogger(ControllerCommunicator.class.getName());

@@ -21,7 +21,7 @@ public class ConnectService extends Service<Boolean> {
                     LOGGER.info("Connect service started");
                     this.updateMessage("Connecting to the database...");
                     PersistenceManager pm = PersistenceManager.getInstance();
-                    pm.connect(); // Persistance managaer call, expected delay
+                    pm.connect(); // Persistance manager call, expected delay
 
 //                  UNUSED TEST PART
 //                    this.updateMessage("TEST 1:  Getting and printing tags...");
@@ -32,8 +32,8 @@ public class ConnectService extends Service<Boolean> {
 //                    List<TaskEntity> tasks = pm.fetchAllTasks();
 //                    System.out.println(tasks);
 
-                    LOGGER.info("Connect service successfully ended");
                     this.updateMessage("Succesfully connected.");
+                    LOGGER.info("Connect service successfully ended");
                     return true;
                 } catch (DBErrorException e) {
                     LOGGER.log(Level.WARNING, "Connect service failed, DB exception occured", e);

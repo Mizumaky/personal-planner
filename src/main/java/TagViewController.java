@@ -29,6 +29,7 @@ public class TagViewController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.info("Initializing tag view controller");
         ControllerCommunicator.registerTagViewController(this);
         //init tree view
         treeView.setShowRoot(false);
@@ -43,6 +44,7 @@ public class TagViewController extends Controller {
                     createTree();
                 });
         //tree data not auto updated since its recreated everytime on refresh
+        LOGGER.info("Tag view controller initialized");
     }
 
 //    @FXML

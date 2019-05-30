@@ -14,8 +14,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
+/**
+ * Controller for the main window. Controls status bar and top menu bar.
+ */
 public class MainWindowController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(MainWindowController.class.getName());
+
     @FXML //so that even if its private, the loader can access it
     private MenuItem fileQuit;
     @FXML
@@ -29,6 +35,7 @@ public class MainWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.info("Initializing main window controller");
         ControllerCommunicator.registerMainController(this);
         statusLabel.setText("Ready");
         ok.setVisible(true);
@@ -39,6 +46,7 @@ public class MainWindowController extends Controller {
         progressIndicator.setManaged(false);
         ControllerCommunicator.bindUnselectedTagsList();
         ControllerCommunicator.refreshTaskView();
+        LOGGER.info("Main window controller initialized");
     }
 
     @FXML
@@ -87,6 +95,9 @@ public class MainWindowController extends Controller {
         failed.visibleProperty().bind(svc.valueProperty().isEqualTo(false));
     }
 
+    /**
+     * Unbind status bar.
+     */
     public void unbindStatusBar() {
         statusLabel.textProperty().unbind();
         progressIndicator.managedProperty().unbind();

@@ -1,4 +1,5 @@
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,7 +29,7 @@ public class MainWindowController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ControllerCommunicator.getInstance().registerMainController(this);
+        ControllerCommunicator.registerMainController(this);
         statusLabel.setText("Ready");
         ok.setVisible(true);
         ok.setManaged(true);
@@ -36,8 +37,8 @@ public class MainWindowController extends Controller {
         failed.setManaged(false);
         progressIndicator.setVisible(false);
         progressIndicator.setManaged(false);
-        ControllerCommunicator.getInstance().bindUnselectedTagsList();
-        ControllerCommunicator.getInstance().refreshTaskView();
+        ControllerCommunicator.bindUnselectedTagsList();
+        ControllerCommunicator.refreshTaskView();
     }
 
     @FXML
@@ -71,19 +72,28 @@ public class MainWindowController extends Controller {
         }
     }
 
-    public Label getStatusLabel() {
-        return statusLabel;
+    /**
+     * Binds the main controllers status bar to a selected service.
+     *
+     * @param svc the service to be bound to
+     */
+    public void bindStatusBar(Service svc) {
+        statusLabel.textProperty().bind(svc.messageProperty());
+        progressIndicator.managedProperty().bind(svc.valueProperty().isNull());
+        progressIndicator.visibleProperty().bind(svc.valueProperty().isNull());
+        ok.managedProperty().bind(svc.valueProperty().isEqualTo(true));
+        ok.visibleProperty().bind(svc.valueProperty().isEqualTo(true));
+        failed.managedProperty().bind(svc.valueProperty().isEqualTo(false));
+        failed.visibleProperty().bind(svc.valueProperty().isEqualTo(false));
     }
 
-    public ProgressIndicator getProgressIndicator() {
-        return progressIndicator;
-    }
-
-    public ImageView getOk() {
-        return ok;
-    }
-
-    public ImageView getFailed() {
-        return failed;
+    public void unbindStatusBar() {
+        statusLabel.textProperty().unbind();
+        progressIndicator.managedProperty().unbind();
+        progressIndicator.visibleProperty().unbind();
+        ok.managedProperty().unbind();
+        ok.visibleProperty().unbind();
+        failed.managedProperty().unbind();
+        failed.visibleProperty().unbind();
     }
 }

@@ -49,7 +49,7 @@ public class TaskWindowController extends Controller {
         });
         tagTreeView.setShowRoot(false);
         tagTreeView.setCellFactory(CheckBoxTreeCell.<TreeEntityProxy>forTreeView());
-        rootTagCategories = ControllerCommunicator.getInstance().getRootTagCategories();
+        rootTagCategories = ControllerCommunicator.getRootTagCategories();
         createTagTree();
         if (task != null) {
             titleTextField.setText(task.getTitle());
@@ -65,27 +65,27 @@ public class TaskWindowController extends Controller {
         tasvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (tasvc.getValue()) {
-                        ControllerCommunicator.getInstance().getTaskViewData().add(tasvc.getTask());
+                        ControllerCommunicator.getTaskViewData().add(tasvc.getTask());
                     } else {
                         thisStage.show();
                         task = null;
                         submitButton.setText("Try again");
                         submitButton.setDisable(false);
                     }
-                    ControllerCommunicator.getInstance().unbindStatusBar();
-                    ControllerCommunicator.getInstance().enableDBButtons();
+                    ControllerCommunicator.unbindStatusBar();
+                    ControllerCommunicator.enableDBButtons();
                 });
         tesvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
                     if (tesvc.getValue()) {
-                        ControllerCommunicator.getInstance().getTaskViewTable().refresh();
+                        ControllerCommunicator.getTaskViewTable().refresh();
                     } else {
                         thisStage.show();
                         submitButton.setText("Try again");
                         submitButton.setDisable(false);
                     }
-                    ControllerCommunicator.getInstance().unbindStatusBar();
-                    ControllerCommunicator.getInstance().enableDBButtons();
+                    ControllerCommunicator.unbindStatusBar();
+                    ControllerCommunicator.enableDBButtons();
                 });
 
     }
@@ -112,9 +112,9 @@ public class TaskWindowController extends Controller {
         }
 
         submitButton.setDisable(true);
-        ControllerCommunicator.getInstance().disableDBButtons();
+        ControllerCommunicator.disableDBButtons();
         if (task != null) {
-            ControllerCommunicator.getInstance().bindStatusBar(tesvc);
+            ControllerCommunicator.bindStatusBar(tesvc);
             task.setTitle(titleTextField.getText());
             task.setDescription(descTextArea.getText());
             task.setTags(new HashSet<>(selectedTags));
@@ -122,7 +122,7 @@ public class TaskWindowController extends Controller {
             tesvc.setTask(task);
             tesvc.start();
         } else {
-            ControllerCommunicator.getInstance().bindStatusBar(tasvc);
+            ControllerCommunicator.bindStatusBar(tasvc);
             task = new TaskEntity(titleTextField.getText(), descTextArea.getText(),false, new HashSet<>(selectedTags));
             tasvc.reset();
             tasvc.setTask(task);

@@ -3,6 +3,9 @@ package JPAobjects;
 import javax.persistence.*;
 import java.util.Collection;
 
+/**
+ * JPA Entity holding all
+ */
 @Entity
 @Table(name = "category", schema = "public")
 @NamedQueries({
@@ -22,11 +25,11 @@ public class CategoryEntity {
 
     //derived field from parent db column
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //@OrderColumn
+    @OrderColumn
     private Collection<CategoryEntity> subcategories;
 
     @OneToMany (mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //@OrderColumn
+    @OrderColumn
     private Collection<TagEntity> tags;
 
     public CategoryEntity() {}

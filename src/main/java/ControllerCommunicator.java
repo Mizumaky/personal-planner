@@ -5,112 +5,145 @@ import javafx.concurrent.Service;
 import javafx.scene.control.TableView;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Single class holding references to interconnected controllers, providing static methods for bindings between them.
+ */
 public class ControllerCommunicator {
-    private static ControllerCommunicator instance = null;
+    private static final Logger LOGGER = Logger.getLogger(ControllerCommunicator.class.getName());
     private static MainWindowController mainWindowController = null;
     private static TaskViewController taskViewController = null;
-//    private static TaskWindowController taskWindowController = null;
     private static TagViewController tagViewController = null;
+//    private static TaskWindowController taskWindowController = null;
 
-    //disable constructor
-    private ControllerCommunicator() {
-    }
+    // Disable constructor
+    private ControllerCommunicator() {}
 
-    public static ControllerCommunicator getInstance() {
-        if (instance == null)
-            instance = new ControllerCommunicator();
-        return instance;
-    }
-
-    public void registerMainController(MainWindowController ctrlr) {
+    // Registering controller references
+    /**
+     * Registers main window controller.
+     *
+     * @param ctrlr The controller reference
+     */
+    public static void registerMainController(MainWindowController ctrlr) {
         mainWindowController = ctrlr;
+        LOGGER.info("Main window controller registered in the communicator");
     }
-    public void registerTaskViewController(TaskViewController ctrlr) {
+
+    /**
+     * Registers task view controller.
+     *
+     * @param ctrlr The controller reference
+     */
+    public static void registerTaskViewController(TaskViewController ctrlr) {
         taskViewController = ctrlr;
+        LOGGER.info("Task view controller registered in the communicator");
     }
-//    public void registerTaskWindowController(TaskWindowController ctrlr) {
+
+    /**
+     * Registers tag view controller.
+     *
+     * @param ctrlr The controller reference
+     */
+    public static void registerTagViewController(TagViewController ctrlr) {
+        tagViewController = ctrlr;
+        LOGGER.info("Tag view controller registered in the communicator");
+    }
+
+//    public static void registerTaskWindowController(TaskWindowController ctrlr) {
 //        taskWindowController = ctrlr;
 //    }
-    public void registerTagViewController(TagViewController ctrlr) {
-        tagViewController = ctrlr;
-    }
 
-    public void refreshTaskView() {
-        taskViewController.refreshTasks();
-    }
-
-    public void refreshTagView() {
-        tagViewController.refreshTags();
-    }
-
-    public ArrayList<CategoryEntity> getRootTagCategories() {
+    // Getters
+    /**
+     * Gets root tag categories from tag view controller.
+     *
+     * @return the root categories
+     */
+    public static ArrayList<CategoryEntity> getRootTagCategories() {
         return tagViewController.getRootCategories();
     }
 
-    public TableView<TaskEntity> getTaskViewTable() {
+    /**
+     * Gets table view from task view controller.
+     *
+     * @return the table view
+     */
+    public static TableView<TaskEntity> getTaskViewTable() {
         return taskViewController.getTable();
     }
 
-    public ObservableList<TaskEntity> getTaskViewData() {
+    /**
+     * Gets table data from task view controller.
+     *
+     * @return the table data
+     */
+    public static ObservableList<TaskEntity> getTaskViewData() {
         return taskViewController.getTableData();
     }
 
-    public void bindUnselectedTagsList() {
+    /**
+     * Gets the list of filtered out tags from task view controller and sets its reference to tag view controller.
+     */
+    public static void bindUnselectedTagsList() {
         tagViewController.setUnselectedTagsList(taskViewController.getUnselectedTagsList());
     }
 
-    public void disableDBButtons() {
-        if (taskViewController != null) {
-            taskViewController.disableButtons();
-        } else {
-            System.err.println("Could not disable buttons, task view controller not registered.");
-        }
-        if (tagViewController != null) {
-            tagViewController.disableButtons();
-        } else {
-            System.err.println("Could not disable buttons, tag view controller not registered.");
-        }
+
+    // Commands
+    /**
+     * A command to task view controller to refresh its task table view
+     */
+    public static void refreshTaskView() {
+        taskViewController.refreshTasks();
+        LOGGER.info("Calling task view controller's task refresh method");
     }
 
-    public void enableDBButtons() {
-        if (taskViewController != null) {
-            taskViewController.enableButtons();
-        } else {
-            System.err.println("Could not enable buttons, task view controller not registered.");
-        }
-        if (tagViewController != null) {
-            tagViewController.enableButtons();
-        } else {
-            System.err.println("Could not enable buttons, tag view controller not registered.");
-        }
-    }
-    public void bindStatusBar(Service svc) {
-        if (mainWindowController != null) {
-            mainWindowController.getStatusLabel().textProperty().bind(svc.messageProperty());
-            mainWindowController.getProgressIndicator().managedProperty().bind(svc.valueProperty().isNull());
-            mainWindowController.getProgressIndicator().visibleProperty().bind(svc.valueProperty().isNull());
-            mainWindowController.getOk().managedProperty().bind(svc.valueProperty().isEqualTo(true));
-            mainWindowController.getOk().visibleProperty().bind(svc.valueProperty().isEqualTo(true));
-            mainWindowController.getFailed().managedProperty().bind(svc.valueProperty().isEqualTo(false));
-            mainWindowController.getFailed().visibleProperty().bind(svc.valueProperty().isEqualTo(false));
-        } else {
-            System.err.println("Could not bind status bar, main controller not registered.");
-        }
+    /**
+     * A command to tag view controller to refresh its tag tree view
+     */
+    public static void refreshTagView() {
+        tagViewController.refreshTags();
+        LOGGER.info("Calling tag view controller's task refresh method");
     }
 
-    public void unbindStatusBar() {
-        if (mainWindowController != null) {
-            mainWindowController.getStatusLabel().textProperty().unbind();
-            mainWindowController.getProgressIndicator().visibleProperty().unbind();
-            mainWindowController.getProgressIndicator().managedProperty().unbind();
-            mainWindowController.getOk().visibleProperty().unbind();
-            mainWindowController.getOk().managedProperty().unbind();
-            mainWindowController.getFailed().visibleProperty().unbind();
-            mainWindowController.getFailed().managedProperty().unbind();
-        } else {
-            System.err.println("Could not unbind status bar, main controller not registered.");
-        }
+
+    /**
+     * A command to task and tag view controllers to disable any database interaction inputs
+     */
+    public static void disableDBButtons() {
+        LOGGER.info("Calling disable database access buttons methods");
+        taskViewController.disableButtons();
+        tagViewController.disableButtons();
+    }
+
+    /**
+     * A command to task and tag view controllers to enable all database interaction inputs
+     */
+    public static void enableDBButtons() {
+        LOGGER.info("Calling enable database access buttons methods");
+        taskViewController.enableButtons();
+        tagViewController.enableButtons();
+    }
+
+    /**
+     * A command to main controller to bind this service to its status bar
+     *
+     * @param svc the service to be bound to
+     */
+    public static void bindStatusBar(Service svc) {
+        LOGGER.log(Level.INFO, "Calling bind main window's status bar to a service", svc);
+        mainWindowController.bindStatusBar(svc);
+    }
+
+    /**
+     * A command to main controller to unbind its status bar from any service
+     */
+    public static void unbindStatusBar() {
+        LOGGER.log(Level.INFO, "Calling unbind main window's status bar");
+        mainWindowController.unbindStatusBar();
     }
 
 }

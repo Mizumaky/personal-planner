@@ -26,7 +26,7 @@ public class TagViewController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ControllerCommunicator.getInstance().registerTagViewController(this);
+        ControllerCommunicator.registerTagViewController(this);
         //init tree view
         treeView.setShowRoot(false);
         treeView.setCellFactory(CheckBoxTreeCell.<TreeEntityProxy>forTreeView());
@@ -35,8 +35,8 @@ public class TagViewController extends Controller {
         trsvc.setResultList(rootCategories);
         trsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
-                    ControllerCommunicator.getInstance().unbindStatusBar();
-                    ControllerCommunicator.getInstance().enableDBButtons();
+                    ControllerCommunicator.unbindStatusBar();
+                    ControllerCommunicator.enableDBButtons();
                     createTree();
                 });
         //tree data not auto updated since its recreated everytime on refresh
@@ -53,8 +53,8 @@ public class TagViewController extends Controller {
 //    }
 
     public void refreshTags() {
-        ControllerCommunicator.getInstance().bindStatusBar(trsvc);
-        ControllerCommunicator.getInstance().disableDBButtons();
+        ControllerCommunicator.bindStatusBar(trsvc);
+        ControllerCommunicator.disableDBButtons();
         trsvc.reset();
         trsvc.start();
     }

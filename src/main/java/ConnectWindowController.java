@@ -12,10 +12,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.System.exit;
 
+/**
+ * Controller for the initial connect window, starts a connect service task and loads and switches to main window if successful.
+ */
 public class ConnectWindowController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(ConnectWindowController.class.getName());
+    //FXML references
     @FXML
     Label statusLabel;
     @FXML
@@ -29,41 +36,8 @@ public class ConnectWindowController extends Controller {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        //INIT CONNECT SERVICE
-        csvc = new ConnectService();
-        statusLabel.setText("Initializing...");
-        statusLabel.textProperty().unbind();
-        statusLabel.textProperty().bind(csvc.messageProperty());
-        progressIndicator.managedProperty().bind(csvc.runningProperty());
-        progressIndicator.visibleProperty().bind(csvc.runningProperty());
-
-        //ASSIGN EVENT HANDLERS
-        csvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
-                wse -> {
-                    boolean result = csvc.getValue();
-                    statusLabel.textProperty().unbind();
-                    if (result) {
-                        cancelButton.setVisible(false);
-                        try {
-                            FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
-                            Parent root = mainPaneLoader.load(); //also instantiates the associated controller
-                            Scene mainScene = new Scene(root, 1260, 820);
-                            Stage mainStage = new Stage();
-                            mainStage.setTitle("Taskira");
-                            mainStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
-                            mainStage.setScene(mainScene);
-                            MainWindowController mwc = mainPaneLoader.getController();
-                            mwc.setStageReference(mainStage);
-                            thisStage.close();
-                            mainStage.show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            exit(1);
-                        }
-                    } else {
-                        tryAgainButton.setVisible(true);
-                    }
-                });
+        LOGGER.info("Initializing connect window controller");
+        // Assign gui event handlers
         cancelButton.setOnAction(event -> {
             cancelButton.setDisable(true);
             statusLabel.textProperty().unbind();
@@ -79,7 +53,50 @@ public class ConnectWindowController extends Controller {
             csvc.start();
         });
 
+        // Init connect service
+        csvc = new ConnectService();
+        // Bind visual indicators
+        statusLabel.textProperty().unbind();
+        statusLabel.textProperty().bind(csvc.messageProperty());
+        progressIndicator.managedProperty().bind(csvc.runningProperty());
+        progressIndicator.visibleProperty().bind(csvc.runningProperty());
+        // Assign service completion event handler
+        csvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
+                wse -> {
+                    LOGGER.info("Connect service on-succeed handler started");
+                    statusLabel.textProperty().unbind();
+                    boolean result = csvc.getValue();
+                    // If connection was successful
+                    if (result) {
+                        cancelButton.setVisible(false);
+                        try {
+                            // Load main window
+                            LOGGER.info("Loading main window");
+                            FXMLLoader mainPaneLoader = new FXMLLoader(getClass().getResource("FXML_Main.fxml"));
+                            Parent root = mainPaneLoader.load(); //note: also instantiates the associated controller
+                            Scene mainScene = new Scene(root, 1260, 820);
+                            Stage mainStage = new Stage();
+                            mainStage.setTitle("Taskira");
+                            mainStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
+                            mainStage.setScene(mainScene);
+                            MainWindowController mwc = mainPaneLoader.getController();
+                            mwc.setStageReference(mainStage);
+                            LOGGER.info("Switching to main window");
+                            thisStage.close();
+                            mainStage.show();
+                        } catch (IOException e) {
+                            // Exit if fxml loading failed
+                            LOGGER.log(Level.SEVERE, "Failed to load FXML", e);
+                            exit(1);
+                        }
+                    } else {
+                        // else show try again button
+                        tryAgainButton.setVisible(true);
+                    }
+                });
         // Start new connection task using the service
+        LOGGER.info("Starting connect service");
         csvc.start();
+        LOGGER.info("Connect window controller initialized");
     }
 }

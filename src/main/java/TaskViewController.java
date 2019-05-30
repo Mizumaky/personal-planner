@@ -55,7 +55,7 @@ public class TaskViewController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ControllerCommunicator.getInstance().registerTaskViewController(this);
+        ControllerCommunicator.registerTaskViewController(this);
         //CREATE SERVICES
         trsvc = new TaskRefreshService();
         tdsvc = new TaskDeleteService();
@@ -112,12 +112,12 @@ public class TaskViewController extends Controller {
                                     //REVERT CHANGES
                                     task.setIs_done(wasSelected);
                                 }
-                                ControllerCommunicator.getInstance().unbindStatusBar();
-                                ControllerCommunicator.getInstance().enableDBButtons();
+                                ControllerCommunicator.unbindStatusBar();
+                                ControllerCommunicator.enableDBButtons();
                                 tableView.refresh();
                             });
-                    ControllerCommunicator.getInstance().bindStatusBar(tesvc);
-                    ControllerCommunicator.getInstance().disableDBButtons();
+                    ControllerCommunicator.bindStatusBar(tesvc);
+                    ControllerCommunicator.disableDBButtons();
                     tesvc.reset();
                     tesvc.start();
                 });
@@ -142,15 +142,15 @@ public class TaskViewController extends Controller {
                     else {
                         tableView.setPlaceholder(new Label("Loading failed!"));
                     }
-                    ControllerCommunicator.getInstance().unbindStatusBar();
-                    ControllerCommunicator.getInstance().enableDBButtons();
-                    ControllerCommunicator.getInstance().refreshTagView();
+                    ControllerCommunicator.unbindStatusBar();
+                    ControllerCommunicator.enableDBButtons();
+                    ControllerCommunicator.refreshTagView();
                     tableView.refresh();
                 });
         tdsvc.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED,
                 wse -> {
-                    ControllerCommunicator.getInstance().unbindStatusBar();
-                    ControllerCommunicator.getInstance().enableDBButtons();
+                    ControllerCommunicator.unbindStatusBar();
+                    ControllerCommunicator.enableDBButtons();
                     tableData.remove(tdsvc.getTask());
                     tableView.refresh();
                 });
@@ -203,8 +203,8 @@ public class TaskViewController extends Controller {
         if (task != null) {
             // there is a selection -> delete
             tdsvc.setTask(task);
-            ControllerCommunicator.getInstance().bindStatusBar(tdsvc);
-            ControllerCommunicator.getInstance().disableDBButtons();
+            ControllerCommunicator.bindStatusBar(tdsvc);
+            ControllerCommunicator.disableDBButtons();
             tdsvc.reset();
             tdsvc.start();
         }
@@ -212,8 +212,8 @@ public class TaskViewController extends Controller {
 
     public void refreshTasks() {
         tableView.setPlaceholder(new Label("Loading..."));
-        ControllerCommunicator.getInstance().bindStatusBar(trsvc);
-        ControllerCommunicator.getInstance().disableDBButtons();
+        ControllerCommunicator.bindStatusBar(trsvc);
+        ControllerCommunicator.disableDBButtons();
         trsvc.reset();
         trsvc.start();
     }

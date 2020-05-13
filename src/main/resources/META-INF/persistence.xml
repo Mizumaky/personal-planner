@@ -7,10 +7,10 @@
         <class>JPAobjects.TaskEntity</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://slon.felk.cvut.cz:5432/db19_mullemi5"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://slon.felk.cvut.cz:5432/db20_mullemi5"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.username" value="db19_mullemi5"/>
-            <property name="hibernate.connection.password" value="Px7DA4"/>
+            <property name="hibernate.connection.username" value="db20_mullemi5"/>
+            <property name="hibernate.connection.password" value="Qv5Mht"/>
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>

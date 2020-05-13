@@ -1,5 +1,6 @@
 import JPAobjects.TagEntity;
 import JPAobjects.TaskEntity;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -24,6 +27,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +45,7 @@ public class TaskViewController extends Controller {
     @FXML
     private TableColumn<TaskEntity, Boolean> doneColumn;
     @FXML
-    private TableColumn<TaskEntity, String> tagColumn;
+    private TableColumn<TaskEntity, Set<TagEntity>> tagColumn;
     @FXML
     private TableColumn<TaskEntity, String> descColumn;
     @FXML
@@ -134,7 +138,39 @@ public class TaskViewController extends Controller {
             }
         }));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
+        //tagColumn.setCellValueFactory(new PropertyValueFactory<>("tags"));
+        tagColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<TaskEntity, Set<TagEntity>>, ObservableValue<Set<TagEntity>>>() {
+            @Override
+            public ObservableValue<Set<TagEntity>> call(TableColumn.CellDataFeatures<TaskEntity, Set<TagEntity>> data) {
+                return new ReadOnlyObjectWrapper<>(data.getValue().getTags());
+            }
+        });
+        tagColumn.setCellFactory(column -> {
+            return new TableCell<TaskEntity, Set<TagEntity>>() {
+                final HBox tagBox = new HBox();
+
+                @Override
+                protected void updateItem(Set<TagEntity> item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setGraphic(tagBox);
+                        tagBox.setSpacing(4);
+                        tagBox.getChildren().clear();
+                        for (TagEntity tag : item) {
+                            Label label = new Label();
+                            label.getStyleClass().add("tag-label");
+                            label.setStyle("-fx-background-color: #" + tag.getColor());
+                            label.setText(tag.toString());
+                            tagBox.getChildren().add(label);
+                        }
+                    }
+                }
+            };
+        });
         descColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         tableView.setEditable(true);
 

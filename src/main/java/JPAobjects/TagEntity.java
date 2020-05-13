@@ -18,7 +18,7 @@ public class TagEntity {
     private String title;
 
     @Column(name = "color", nullable = false)
-    private int color;
+    private String color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category")
@@ -28,7 +28,7 @@ public class TagEntity {
     private Set<TaskEntity> tasks;
 
     public TagEntity() {}
-    public TagEntity(String title, int color, CategoryEntity category) {
+    public TagEntity(String title, String color, CategoryEntity category) {
         this.title = title;
         this.color = color;
         this.category = category;
@@ -45,10 +45,10 @@ public class TagEntity {
         this.title = title;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

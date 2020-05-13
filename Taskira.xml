@@ -327,8 +327,8 @@
       <include name="src/test/java"/>
     </dirset>
   </path>
-  
-  
+
+
   <target name="compile.module.personalplanner" depends="compile.module.personalplanner.production,compile.module.personalplanner.tests" description="Compile module personalplanner"/>
   
   <target name="compile.module.personalplanner.production" depends="register.custom.compilers" description="Compile module personalplanner; production classes">

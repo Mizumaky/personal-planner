@@ -16,36 +16,36 @@ INSERT INTO category (title, parent) VALUES
     ('plan', NULL)
 ;
 
-INSERT INTO tag (title, category) VALUES
-        ('ukoly', 2),      --1
-        ('skola ostatni', 2),
-    ('preziti', 1),
-    ('osobni', 1),
-    ('pratele', 1),
-    ('ostatni', 1),   --6
+INSERT INTO tag (title, category, color) VALUES
+        ('ukoly', 2, 'FFFFFF'),      --1
+        ('skola ostatni', 2, 'FFFFFF'),
+    ('preziti', 1, 'FFFFFF'),
+    ('osobni', 1, 'FFFFFF'),
+    ('pratele', 1, 'FFFFFF'),
+    ('ostatni', 1, 'FFFFFF'),   --6
 
-    ('quick', 3),   --7
-    ('odpocinkovy', 3),
-    ('bezny', 3),
-    ('narocny', 3),
-    ('special', 3),   --11
+    ('quick', 3, 'FFFFFF'),   --7
+    ('odpocinkovy', 3, 'FFFFFF'),
+    ('bezny', 3, 'FFFFFF'),
+    ('narocny', 3, 'FFFFFF'),
+    ('special', 3, 'FFFFFF'),   --11
 
-    ('doma', 4),  --12
-    ('ve skole', 4),
-    ('na koleji', 4),
-    ('na ceste', 4),
-    ('jinde', 4),     --16
+    ('doma', 4, 'FFFFFF'),  --12
+    ('ve skole', 4, 'FFFFFF'),
+    ('na koleji', 4, 'FFFFFF'),
+    ('na ceste', 4, 'FFFFFF'),
+    ('jinde', 4, 'FFFFFF'),     --16
 
-    ('critical', 5),  --17
-    ('must do', 5),
-    ('todo', 5),
-    ('maybe do', 5),   --20
+    ('critical', 5, 'ff704d'),  --17
+    ('must do', 5, 'ffa64d'),
+    ('todo', 5, 'ffff4d'),
+    ('maybe do', 5, 'c2d6d6'),   --20
 
-    ('brzy', 6),   --21
-    ('tento tyden', 6),
-    ('behem 14 dni', 6),
-    ('az bude cas', 6),
-    ('bez urceni', 6)  --25
+    ('brzy', 6, 'FFFFFF'),   --21
+    ('tento tyden', 6, 'FFFFFF'),
+    ('behem 14 dni', 6, 'FFFFFF'),
+    ('az bude cas', 6, 'FFFFFF'),
+    ('bez urceni', 6, 'FFFFFF')  --25
 ;
 
 INSERT INTO task_tag (task_id, tag_id) VALUES

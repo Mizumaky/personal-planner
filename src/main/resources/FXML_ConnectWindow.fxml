@@ -8,24 +8,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="70.0" prefWidth="300.0" styleClass="my-pop-up" xmlns="http://javafx.com/javafx/8.0.172-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="ConnectWindowController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="300.0" styleClass="my-pop-up" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ConnectWindowController">
     <stylesheets>
-        <URL value="@CSS_my_style_1.css"/>
+        <URL value="@CSS_my_style_1.css" />
     </stylesheets>
     <HBox alignment="BOTTOM_CENTER" prefHeight="27.0" prefWidth="200.0" spacing="10.0">
-        <Label fx:id="statusLabel" styleClass="my-strong-text" text="Initializing gui..."/>
-        <ProgressIndicator fx:id="progressIndicator" maxHeight="17.0" maxWidth="15.0"/>
+        <Label fx:id="statusLabel" styleClass="my-strong-text" text="Initializing gui..." />
+        <ProgressIndicator fx:id="progressIndicator" maxHeight="17.0" maxWidth="15.0" />
     </HBox>
     <HBox alignment="CENTER_RIGHT" prefHeight="43.0" prefWidth="200.0" spacing="8.0">
         <VBox.margin>
-            <Insets/>
+            <Insets />
         </VBox.margin>
         <padding>
-            <Insets bottom="8.0" right="10.0" top="8.0"/>
+            <Insets bottom="8.0" right="10.0" top="8.0" />
         </padding>
-        <Button fx:id="tryAgainButton" mnemonicParsing="false" text="Try again" visible="false"/>
-        <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel"/>
+        <Button fx:id="tryAgainButton" mnemonicParsing="false" text="Try again" visible="false" />
+        <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel" />
     </HBox>
 </VBox>

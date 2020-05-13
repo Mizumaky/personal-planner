@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TaskiraPersistence/Hibernate" uuid="03c11026-b04e-46b4-9c0d-f8a4551c2605">
+    <data-source source="LOCAL" name="db20_mullemi5" uuid="b560f7f4-39f3-42c7-bfbf-ebf9a10aeb5a">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>Hibernate
-
-C:/Users/Mizumaky/Desktop/Projects/Time management app/Development/personalplanner/src/main/resources/META-INF/persistence.xml</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://slon.felk.cvut.cz:5432/db19_mullemi5</jdbc-url>
+      <jdbc-url>jdbc:postgresql://slon.felk.cvut.cz:5432/db20_mullemi5</jdbc-url>
     </data-source>
   </component>
 </project>
